@@ -33,9 +33,8 @@ public class CRDT {
   public void localInsert(char value, int index) {
     Char newChar = this.generateChar(value, index);
     this.struct.add(index, newChar);
-    System.out.print("Current struct: ");
+    // LOG
     this.printStruct();
-    System.out.println();
   }
 
   /**
@@ -69,9 +68,8 @@ public class CRDT {
    * @return the position before
    */
   private ArrayList<Integer> findPosBefore(int index) {
-    if ((this.struct.size() == 0) || (index == 0)) {
+    if ((this.struct.size() == 0) || (index == 0))
       return new ArrayList<>();
-    }
     Char charBefore = this.struct.get(index-1);
     return charBefore.getPosition();
   }
@@ -89,9 +87,7 @@ public class CRDT {
       return end;
     }
     Char charAfter = this.struct.get(index);
-    if (charAfter == null) {
-      return new ArrayList<>();
-    }
+    if (charAfter == null) return new ArrayList<>();
     return charAfter.getPosition();
   }
 
@@ -103,22 +99,19 @@ public class CRDT {
    * @return position result
    */
   private ArrayList<Integer> generatePosBetween(ArrayList<Integer> posBefore, ArrayList<Integer> posAfter, ArrayList<Integer> posResult) {
-    int levelBefore, levelAfter;
+    int levelBefore = 0;
+    int levelAfter = 99; // Some high range number, replaced later
 
     if (posBefore.size() == 0 && posAfter.size() == 0) {
       posResult.add(0);
       return posResult;
     }
-
-    if (posBefore.size() == 0) levelBefore = 0;
-    else levelBefore = posBefore.get(0);
-    if (posAfter.size() == 0) levelAfter = 0;
-    else levelAfter = posAfter.get(0);
+    if (posBefore.size() != 0) levelBefore =  posBefore.get(0);
+    if (posAfter.size() != 0) levelAfter =  posAfter.get(0);
 
     if (levelAfter - levelBefore > 1) {
 
-      int newPos = levelBefore + 1; // Will be replaced later
-      posResult.add(newPos);
+      posResult.add(levelBefore + 1); // Will be replaced later
       return posResult;
 
     } else if (levelAfter - levelBefore == 1) {
@@ -126,7 +119,7 @@ public class CRDT {
       posResult.add(levelBefore);
       ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
       if (newPosBefore.size() > 0) newPosBefore.remove(0);
-      return this.generatePosBetween(newPosBefore, new ArrayList<Integer>(), posResult);
+      return this.generatePosBetween(newPosBefore, new ArrayList<>(), posResult);
 
     } else if (levelAfter == levelBefore) {
 
@@ -158,10 +151,11 @@ public class CRDT {
    * Print current struct contents
    */
   private void printStruct() {
+    System.out.print("Current struct: ");
     for (int i=0; i<this.struct.size(); i++) {
       System.out.print(this.struct.get(i).getValue());
     }
-    System.out.println();
+    System.out.println('\n');
   }
 
 }
