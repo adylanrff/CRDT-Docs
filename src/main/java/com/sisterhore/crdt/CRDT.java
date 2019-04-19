@@ -11,6 +11,7 @@ public class CRDT {
     this.siteId = siteId;
     this.struct = new ArrayList<Char>();
   }
+
   /**
    * @return the siteId
    */
@@ -45,15 +46,18 @@ public class CRDT {
    */
   private Char generateChar(char value, int index) {
     ArrayList<Integer> posBefore = this.findPosBefore(index);
+    // LOG
     System.out.print("Position before: ");
     this.printPosition(posBefore);
 
     ArrayList<Integer> posAfter = this.findPosAfter(index);
+    // LOG
     System.out.print("Position after: ");
     this.printPosition(posAfter);
 
     ArrayList<Integer> posResult = new ArrayList<>();
     ArrayList<Integer> newPos = this.generatePosBetween(posBefore, posAfter, posResult);
+    // LOG
     System.out.print("New position: ");
     this.printPosition(newPos);
 
@@ -102,9 +106,8 @@ public class CRDT {
     int levelBefore, levelAfter;
 
     if (posBefore.size() == 0 && posAfter.size() == 0) {
-      ArrayList<Integer> initial = new ArrayList<>();
-      initial.add(0);
-      return initial;
+      posResult.add(0);
+      return posResult;
     }
 
     if (posBefore.size() == 0) levelBefore = 0;
@@ -113,18 +116,35 @@ public class CRDT {
     else levelAfter = posAfter.get(0);
 
     if (levelAfter - levelBefore > 1) {
+
       int newPos = levelBefore + 1; // Will be replaced later
       posResult.add(newPos);
       return posResult;
+
     } else if (levelAfter - levelBefore == 1) {
+
       posResult.add(levelBefore);
       ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
-      newPosBefore.remove(0);
-      return this.generatePosBetween(newPosBefore, posAfter, posResult);
+      if (newPosBefore.size() > 0) newPosBefore.remove(0);
+      return this.generatePosBetween(newPosBefore, new ArrayList<Integer>(), posResult);
+
+    } else if (levelAfter == levelBefore) {
+
+      posResult.add(levelBefore);
+      ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
+      if (newPosBefore.size() > 0) newPosBefore.remove(0);
+      ArrayList<Integer> newPosAfter = (ArrayList) posAfter.clone();
+      if (newPosAfter.size() > 0) newPosAfter.remove(0);
+      return this.generatePosBetween(newPosBefore, newPosAfter, posResult);
+
     }
     return posResult;
   }
 
+  /**
+   * Print position in format [1,2,...]
+   * @param position position array
+   */
   private void printPosition(ArrayList<Integer> position) {
     System.out.print('[');
     for (int i=0; i<position.size(); i++) {
@@ -134,6 +154,9 @@ public class CRDT {
     System.out.println(']');
   }
 
+  /**
+   * Print current struct contents
+   */
   private void printStruct() {
     for (int i=0; i<this.struct.size(); i++) {
       System.out.print(this.struct.get(i).getValue());
