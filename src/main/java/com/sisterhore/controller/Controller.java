@@ -1,4 +1,4 @@
-package Controller;
+package com.sisterhore.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -6,8 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import CRDT.CRDT;
+import com.sisterhore.crdt.CRDT;
 
 public class Controller {
   private Client client;

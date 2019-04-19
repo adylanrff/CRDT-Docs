@@ -22,21 +22,15 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-package Controller;
+package com.sisterhore.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
@@ -104,16 +98,19 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onError( WebSocket conn, Exception ex ) {
-		ex.printStackTrace();
+		if (ex.getClass() != null && ex.getClass() == BindException.class){
+			System.err.println("Address already in use");
+			System.exit(1);
+		}
+
 		if( conn != null ) {
+			ex.printStackTrace();
 			// some errors like port binding failed may not be assignable to a specific websocket
 		}
 	}
 
 	@Override
 	public void onStart() {
-		System.out.println("SERVER: Peer started!");
-		setConnectionLostTimeout(0);
 		setConnectionLostTimeout(100);
 	}
 

@@ -1,4 +1,4 @@
-package CRDT;
+package com.sisterhore.crdt;
 
 import java.util.ArrayList;
 

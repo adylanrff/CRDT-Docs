@@ -1,9 +1,11 @@
+package com.sisterhore.view;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
-import Controller.Controller;
+import com.sisterhore.controller.Controller;
 
 public class CommandLineInterface extends Thread {
   Controller controller;
