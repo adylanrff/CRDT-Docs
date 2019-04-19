@@ -30,16 +30,22 @@ public class CRDT {
    * @param index index where the value will be inserted
    */
   public void localInsert(char value, int index) {
-//    static Char char =
+    Char newChar = this.generateChar(value, index);
+    this.struct.add(index, newChar);
   }
 
-  public void generateChar(char value, int index) {
+  private Char generateChar(char value, int index) {
     ArrayList<Integer> posBefore = this.findPosBefore(index);
-    ArrayList<Integer> posAfter = this.findPosAfter(index);
-    ArrayList<Integer> newPos;
+    this.printPosition(posBefore);
 
-    posBefore = this.struct.get(index-1).getPosition();
-    posAfter = this.struct.get(index).getPosition();
+    ArrayList<Integer> posAfter = this.findPosAfter(index);
+    this.printPosition(posAfter);
+
+    ArrayList<Integer> posResult = new ArrayList<>();
+    ArrayList<Integer> newPos = this.generatePosBetween(posBefore, posAfter, posResult);
+    this.printPosition(newPos);
+
+    return new Char(this.siteId, value, newPos);
   }
 
   /**
@@ -53,11 +59,21 @@ public class CRDT {
    * So, we need to find position before position 2, that is 1.
    */
   private ArrayList<Integer> findPosBefore(int index) {
+    if ((this.struct.size() == 0) || (index == 0)) {
+      return new ArrayList<>();
+    }
     Char charBefore = this.struct.get(index-1);
     return charBefore.getPosition();
   }
 
   private ArrayList<Integer> findPosAfter(int index) {
+    if (this.struct.size() == 0) {
+      return new ArrayList<>();
+    } else if (index == this.struct.size()) {
+      ArrayList<Integer> end = new ArrayList<>();
+      end.add(index);
+      return end;
+    }
     Char charAfter = this.struct.get(index);
     if (charAfter == null) {
       return new ArrayList<>();
@@ -66,20 +82,37 @@ public class CRDT {
   }
 
   private ArrayList<Integer> generatePosBetween(ArrayList<Integer> posBefore, ArrayList<Integer> posAfter, ArrayList<Integer> posResult) {
-    int level1 = posBefore.get(0);
-    int level2 = posAfter.get(0);
+    int levelBefore, levelAfter;
 
-    if (level1 - level2 > 1) {
-      int newPos = level1 + 1; // Will be replaced later
+    if (posBefore.size() == 0 && posAfter.size() == 0) {
+      ArrayList<Integer> initial = new ArrayList<>();
+      initial.add(0);
+      return initial;
+    }
+
+    if (posBefore.size() == 0) levelBefore = 0;
+    else levelBefore = posBefore.get(0);
+    if (posAfter.size() == 0) levelAfter = 0;
+    else levelAfter = posAfter.get(0);
+
+    if (levelBefore - levelAfter > 1) {
+      int newPos = levelBefore + 1; // Will be replaced later
       posResult.add(newPos);
       return posResult;
-    } else if (level1 - level2 == 1) {
-      posResult.add(level1);
+    } else if (levelBefore - levelAfter == 1) {
+      posResult.add(levelBefore);
       ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
       newPosBefore.remove(0);
       return this.generatePosBetween(newPosBefore, posAfter, posResult);
     }
     return posResult;
+  }
+
+  private void printPosition(ArrayList<Integer> position) {
+    for (int i=0; i<position.size(); i++) {
+      System.out.print(String.format("%d ", position.get(i)));
+    }
+    System.out.println();
   }
 
 }

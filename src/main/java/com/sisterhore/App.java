@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import com.sisterhore.controller.Controller;
+import com.sisterhore.crdt.CRDTTest;
 import com.sisterhore.view.CommandLineInterface;
 
 public class App {
