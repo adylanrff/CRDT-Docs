@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 
 import com.sisterhore.controller.Controller;
 
-public class CommandLineInterface extends Thread {
+public class CLIView extends View implements Runnable {
   Controller controller;
 
   private String getInput() throws IOException {
@@ -21,23 +21,12 @@ public class CommandLineInterface extends Thread {
     return message.startsWith("ws://");
   }
 
-  public CommandLineInterface(Controller controller) {
-    this.controller = controller;
+  public CLIView(Controller controller) {
+    super(controller);
   }
+  
 
-  public void run() {
-    System.out.print("Enter peer URI: ");
-    try {
-      String uriString = getInput();
-      if(isUriValid(uriString)){
-        this.controller.connectToPeer(uriString);
-      }
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
+  private void runChatLoop() {
     if (this.controller != null) {
       while (true) {
         String message = "";
@@ -53,5 +42,34 @@ public class CommandLineInterface extends Thread {
     } else {
       System.err.println("Failed to create node");
     }
+  }
+
+  private void promptPeerUri() {
+    System.out.print("Enter peer URI: ");
+    try {
+      String uriString = getInput();
+      if (isUriValid(uriString)) {
+        this.controller.connectToPeer(uriString);
+      }
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void run() {
+    this.start(null);
+  }
+
+  @Override
+  public void stop() {
+    System.exit(0);
+  }
+
+  @Override
+  public void start(String[] args) {
+    promptPeerUri();
+    runChatLoop();
   }
 }

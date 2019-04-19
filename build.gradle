@@ -14,11 +14,11 @@ plugins {
 
 javafx {
     version = "11"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml']
 }
 
 // Define the main class for the application
-mainClassName = 'App'
+mainClassName = 'com.sisterhore.AppGUI'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
