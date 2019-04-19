@@ -14,15 +14,17 @@ import com.sisterhore.view.CommandLineInterface;
 public class App {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
-        Controller controller = null;
-        CommandLineInterface cli = null;
-        try {
-            controller = new Controller(port);
-            cli = new CommandLineInterface(controller);
-            cli.start();
-        } catch (UnknownHostException e) {
-            System.out.println("Exception occured: " + e);
-        }
+      CRDTTest test = new CRDTTest();
+      test.run();
+//        int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
+//        Controller controller = null;
+//        CommandLineInterface cli = null;
+//        try {
+//            controller = new Controller(port);
+//            cli = new CommandLineInterface(controller);
+//            cli.start();
+//        } catch (UnknownHostException e) {
+//            System.out.println("Exception occured: " + e);
+//        }
     }
 }
