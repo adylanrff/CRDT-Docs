@@ -8,6 +8,7 @@ public class CRDT {
   private int siteId;
   private ArrayList<Char> struct;
   private HashMap<Integer, BoundaryType> strategyChoice;
+  private int base;
   enum BoundaryType {
     PLUS, MINUS
   }
@@ -17,6 +18,7 @@ public class CRDT {
     this.siteId = siteId;
     this.struct = new ArrayList<>();
     this.strategyChoice = new HashMap<>();
+    this.base = 32;
   }
 
   /**
@@ -61,7 +63,6 @@ public class CRDT {
     System.out.print("Position after: ");
     this.printPosition(posAfter);
 
-    ArrayList<Integer> posResult = new ArrayList<>();
     ArrayList<Integer> newPos = this.allocPosBetween(posBefore, posAfter);
     // LOG
     System.out.print("New position: ");
@@ -112,9 +113,27 @@ public class CRDT {
     return this.strategyChoice.get(depth);
   }
 
+  /**
+   * Calculate base for certain depth
+   * @param depth asked depth
+   * @return base
+   */
+  private int calculateBase(int depth) {
+    int multiplier = (int) Math.pow(2, (double) depth);
+    return multiplier * this.base;
+  }
+
+  /**
+   * Generate new position between posBefore and posAfter
+   * @param posBefore position before
+   * @param posAfter position after
+   * @return position result
+   */
   private ArrayList<Integer> allocPosBetween(ArrayList<Integer> posBefore, ArrayList<Integer> posAfter) {
-    int interval = 0, depth = 0;
-    int prefixBefore = 0, prefixAfter = 99;
+    int interval = 0;
+    int depth = 0;
+    int prefixBefore = 0;
+    int prefixAfter = this.calculateBase(depth);
     BoundaryType strategy;
     ArrayList<Integer> posResult = new ArrayList<>();
 
@@ -129,7 +148,7 @@ public class CRDT {
       depth++; /* Down 1 level */
       if (posBefore.size() < depth) prefixBefore = 0;
       else prefixBefore = posBefore.get(depth - 1);
-      if (posAfter.size() < depth) prefixAfter = 99;
+      if (posAfter.size() < depth) prefixAfter = this.calculateBase(depth - 1);
       else prefixAfter = posAfter.get(depth - 1);
 
       interval = prefixAfter - prefixBefore - 1;
@@ -144,19 +163,15 @@ public class CRDT {
 
     strategy = this.allocBoundaryStrategy(depth);
     if (strategy == BoundaryType.PLUS) {
-
-      System.out.println("Plus");
+      System.out.println("Plus"); /* LOG */
       int val = new Random().nextInt(step) + 1;
       int id = prefixBefore + val;
       posResult.add(id);
-
     } else {
-
-      System.out.println("Minus");
+      System.out.println("Minus"); /* LOG */
       int val = new Random().nextInt(step) + 1;
-      int id = prefixAfter  - val;
+      int id = prefixAfter - val;
       posResult.add(id);
-
     }
 
     return posResult;
