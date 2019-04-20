@@ -1,15 +1,22 @@
 package com.sisterhore.crdt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
 
 public class CRDT {
   private int siteId;
   private ArrayList<Char> struct;
+  private HashMap<Integer, BoundaryType> strategyChoice;
+  enum BoundaryType {
+    PLUS, MINUS
+  }
+  static final int boundary = 10;
 
   public CRDT(int siteId){
     this.siteId = siteId;
-    this.struct = new ArrayList<Char>();
+    this.struct = new ArrayList<>();
+    this.strategyChoice = new HashMap<>();
   }
 
   /**
@@ -55,7 +62,7 @@ public class CRDT {
     this.printPosition(posAfter);
 
     ArrayList<Integer> posResult = new ArrayList<>();
-    ArrayList<Integer> newPos = this.generatePosBetween(posBefore, posAfter, posResult);
+    ArrayList<Integer> newPos = this.allocPosBetween(posBefore, posAfter);
     // LOG
     System.out.print("New position: ");
     this.printPosition(newPos);
@@ -70,7 +77,7 @@ public class CRDT {
   private ArrayList<Integer> findPosBefore(int index) {
     if ((this.struct.size() == 0) || (index == 0))
       return new ArrayList<>();
-    Char charBefore = this.struct.get(index-1);
+    Char charBefore = this.struct.get(index - 1);
     return charBefore.getPosition();
   }
 
@@ -92,46 +99,78 @@ public class CRDT {
   }
 
   /**
-   * Generate new position between posBefore and posAfter
-   * @param posBefore left boundary
-   * @param posAfter right boundary
-   * @param posResult new position
-   * @return position result
+   * Generate boundary strategy for certain depth
+   * @param depth asked depth
+   * @return Boundary type
    */
-  private ArrayList<Integer> generatePosBetween(ArrayList<Integer> posBefore, ArrayList<Integer> posAfter, ArrayList<Integer> posResult) {
-    int levelBefore = 0;
-    int levelAfter = 99; // Some high range number, replaced later
+  private BoundaryType allocBoundaryStrategy(int depth) {
+    if (!this.strategyChoice.containsKey(depth)) {
+      boolean choice = new Random().nextBoolean();
+      if (choice) this.strategyChoice.put(depth, BoundaryType.PLUS);
+      else this.strategyChoice.put(depth, BoundaryType.MINUS);
+    }
+    return this.strategyChoice.get(depth);
+  }
 
+  private ArrayList<Integer> allocPosBetween(ArrayList<Integer> posBefore, ArrayList<Integer> posAfter) {
+    int interval = 0, depth = 0;
+    int prefixBefore = 0, prefixAfter = 99;
+    BoundaryType strategy;
+    ArrayList<Integer> posResult = new ArrayList<>();
+
+    /* For 1st char in struct */
     if (posBefore.size() == 0 && posAfter.size() == 0) {
       posResult.add(0);
       return posResult;
     }
-    if (posBefore.size() != 0) levelBefore =  posBefore.get(0);
-    if (posAfter.size() != 0) levelAfter =  posAfter.get(0);
 
-    if (levelAfter - levelBefore > 1) {
+    /* While there's no space to be inserted */
+    while (interval < 1) {
+      depth++; /* Down 1 level */
+      if (posBefore.size() < depth) prefixBefore = 0;
+      else prefixBefore = posBefore.get(depth - 1);
+      if (posAfter.size() < depth) prefixAfter = 99;
+      else prefixAfter = posAfter.get(depth - 1);
 
-      posResult.add(levelBefore + 1); // Will be replaced later
-      return posResult;
+      interval = prefixAfter - prefixBefore - 1;
 
-    } else if (levelAfter - levelBefore == 1) {
+      if (interval == 0) {
+        posResult.add(prefixBefore);
+      } else if (interval == -1) { /* Will add extra handling later */
+        posResult.add(prefixBefore);
+      }
+    }
+    int step = Math.min(interval, boundary);
 
-      posResult.add(levelBefore);
-      ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
-      if (newPosBefore.size() > 0) newPosBefore.remove(0);
-      return this.generatePosBetween(newPosBefore, new ArrayList<>(), posResult);
+    strategy = this.allocBoundaryStrategy(depth);
+    if (strategy == BoundaryType.PLUS) {
 
-    } else if (levelAfter == levelBefore) {
+      System.out.println("Plus");
+      int val = new Random().nextInt(step) + 1;
+      int id = prefixBefore + val;
+      posResult.add(id);
 
-      posResult.add(levelBefore);
-      ArrayList<Integer> newPosBefore = (ArrayList) posBefore.clone();
-      if (newPosBefore.size() > 0) newPosBefore.remove(0);
-      ArrayList<Integer> newPosAfter = (ArrayList) posAfter.clone();
-      if (newPosAfter.size() > 0) newPosAfter.remove(0);
-      return this.generatePosBetween(newPosBefore, newPosAfter, posResult);
+    } else {
+
+      System.out.println("Minus");
+      int val = new Random().nextInt(step) + 1;
+      int id = prefixAfter  - val;
+      posResult.add(id);
 
     }
+
     return posResult;
+  }
+
+  /**
+   * Returns new arrayList without head
+   * @param input arrayList
+   * @return new modified arrayList
+   */
+  private ArrayList<Integer> slice(ArrayList<Integer> input) {
+    ArrayList<Integer> result = (ArrayList) input.clone();
+    if (result.size() > 0) result.remove(0);
+    return result;
   }
 
   /**
