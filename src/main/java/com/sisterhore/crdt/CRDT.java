@@ -36,6 +36,7 @@ public class CRDT {
   }
 
   /**
+   * Insert by index on local
    * @param value value of character to be inserted
    * @param index index where the value will be inserted
    */
@@ -44,6 +45,19 @@ public class CRDT {
     this.struct.add(index, newChar);
     // LOG
     this.printStruct();
+  }
+
+  /**
+   * Delete by index on local
+   * @param index
+   * @return
+   */
+  public Char localDelete(int index) {
+    Char deletedChar = this.struct.get(index);
+    this.struct.remove(index);
+    // LOG
+    this.printStruct();
+    return deletedChar;
   }
 
   /**
