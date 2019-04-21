@@ -8,11 +8,14 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import com.sisterhore.controller.Controller;
+import com.sisterhore.crdt.CRDTTest;
 import com.sisterhore.view.CommandLineInterface;
 
 public class App {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+//      CRDTTest test = new CRDTTest();
+//      test.run();
         int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
         Controller controller = null;
         CommandLineInterface cli = null;
