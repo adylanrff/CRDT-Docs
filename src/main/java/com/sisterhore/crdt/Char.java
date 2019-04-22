@@ -3,11 +3,11 @@ package com.sisterhore.crdt;
 import java.util.ArrayList;
 
 public class Char {
-  private int siteId;
+  private String siteId;
   private char value;
   private ArrayList<Integer> position;
 
-  public Char(int siteId, char value, ArrayList<Integer> position){
+  public Char(String siteId, char value, ArrayList<Integer> position){
     this.siteId = siteId;
     this.value = value;
     this.position = position;
@@ -15,7 +15,7 @@ public class Char {
   /**
    * @return the siteId
    */
-  public int getSiteId() {
+  public String getSiteId() {
     return siteId;
   }
 
@@ -41,7 +41,7 @@ public class Char {
   /**
    * @param siteId the siteId to set
    */
-  public void setSiteId(int siteId) {
+  public void setSiteId(String siteId) {
     this.siteId = siteId;
   }
 
