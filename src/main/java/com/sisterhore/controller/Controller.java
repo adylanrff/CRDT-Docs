@@ -9,7 +9,7 @@ import java.util.Map;
 import com.sisterhore.crdt.CRDT;
 
 public class Controller {
-  private Client client;
+  private ArrayList<Client> clients;
   private Server server;
   private CRDT crdt;
   private int serverPort;
@@ -18,7 +18,8 @@ public class Controller {
   public Controller(int serverPort) throws UnknownHostException {
     this.setServerPort(serverPort);
     this.serverPort = serverPort;
-    this.peers = new ArrayList<>();
+    this.peers = new ArrayList<String>();
+    this.clients = new ArrayList<Client>();
   }
 
   public void startServer() throws UnknownHostException {
@@ -44,14 +45,21 @@ public class Controller {
     if (!this.peers.contains(uri)) {
       Map<String, String> httpHeaders = new HashMap<String, String>();
       httpHeaders.put("server_port", String.valueOf(this.serverPort));
-      this.client = new Client(this, uri, httpHeaders);
-      this.client.connect();
+      Client client = new Client(this, uri, httpHeaders);
+      // client.connect();
+      this.clients.add(client);
       this.insertPeer(uri);
+      client.connect();
     }
   }
 
-  public void closeClient() {
-    this.client.close();
+  public void closeClient(String uri) {
+    for (Client client : clients) {
+      if (client.getURI().toString() == uri){
+        client.close();
+        clients.remove(client);
+      }
+    }
   }
 
   public void closeServer() throws IOException, InterruptedException {
@@ -59,10 +67,8 @@ public class Controller {
   }
   
   public void sendMessage(String message){
-    if (this.peers.size()>1){
-      this.server.broadcast(message);
-    } else {
-      this.client.send(message);
+    for (Client client : clients) {
+      client.send(message);
     }
   }
 

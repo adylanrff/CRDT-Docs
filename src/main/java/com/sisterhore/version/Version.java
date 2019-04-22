@@ -12,4 +12,16 @@ public class Version {
   public int getSiteId() { return this.siteId; }
 
   public int getCounter() { return this.counter; }
+
+  public void setSiteId(int siteId) {
+    this.siteId = siteId;
+  }
+
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
+
+  public void incrementCounter(){
+    this.counter++;
+  };
 }

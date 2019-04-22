@@ -13,15 +13,13 @@ import com.sisterhore.view.View;
 
 public class AppCLI {
     public static void main(String[] args) throws IOException, URISyntaxException {
-//      CRDTTest test = new CRDTTest();
-//      test.run();
         int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
         Controller controller = null;
-        View view = null;
+        CLIView view = null;
         try {
             controller = new Controller(port);
             view = new CLIView(controller);
-            view.start(args);
+            view.run();
         } catch (UnknownHostException e) {
             System.out.println("Exception occured: " + e);
         }

@@ -36,7 +36,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
   private Controller controller;
-
+  
   public Client(Controller controller, String uri, Map<String,String> httpHeaders) throws URISyntaxException {
     super(new URI(uri), new Draft_6455(), httpHeaders);
     this.setReuseAddr(true);

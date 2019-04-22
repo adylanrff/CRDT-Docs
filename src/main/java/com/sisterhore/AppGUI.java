@@ -34,8 +34,6 @@ public class AppGUI extends Application {
     controller.startServer();
 
     primaryStage.setScene(scene);
-    primaryStage.setWidth(800.0);
-    primaryStage.setHeight(600.0);
     primaryStage.show();
   }
 

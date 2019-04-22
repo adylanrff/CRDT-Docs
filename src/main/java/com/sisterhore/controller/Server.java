@@ -85,7 +85,6 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
-		broadcast(message);
 		System.out.println(conn + "-SERVER: " + message);
 		gossipMessage(conn, message);
 	}

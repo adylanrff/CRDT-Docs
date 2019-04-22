@@ -4,27 +4,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 
 import com.sisterhore.controller.Controller;
 
 public class CLIView extends View implements Runnable {
-  Controller controller;
 
   private String getInput() throws IOException {
     BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
     String input = sysin.readLine();
-    String str = input!=null?input:"";
+    String str = input != null ? input : "";
     return str;
   }
 
-  private boolean isUriValid(String message){
+  private boolean isUriValid(String message) {
     return message.startsWith("ws://");
   }
 
   public CLIView(Controller controller) {
     super(controller);
   }
-  
 
   private void runChatLoop() {
     if (this.controller != null) {
@@ -49,11 +48,12 @@ public class CLIView extends View implements Runnable {
     try {
       String uriString = getInput();
       if (isUriValid(uriString)) {
+        System.out.println(uriString);
         this.controller.connectToPeer(uriString);
       }
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
     } catch (IOException e) {
+      e.printStackTrace();
+    } catch (URISyntaxException e) {
       e.printStackTrace();
     }
   }
@@ -69,6 +69,11 @@ public class CLIView extends View implements Runnable {
 
   @Override
   public void start(String[] args) {
+    try {
+      this.controller.startServer();
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
     promptPeerUri();
     runChatLoop();
   }
