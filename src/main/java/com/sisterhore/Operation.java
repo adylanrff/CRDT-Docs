@@ -1,8 +1,10 @@
+import com.sisterhore.crdt.Char;
+
 enum OperationType {INSERT, DELETE}
 
 public class Operation {
     private OperationType operationType;
-    private Character characaterUsed;
+    private Char characterUsed;
     private Integer version;
     private Integer index;
 }
