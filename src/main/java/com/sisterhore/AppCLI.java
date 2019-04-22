@@ -13,6 +13,8 @@ import com.sisterhore.view.View;
 
 public class AppCLI {
     public static void main(String[] args) throws IOException, URISyntaxException {
+//      CRDTTest test = new CRDTTest();
+//      test.run();
         int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
         Controller controller = null;
         View view = null;
