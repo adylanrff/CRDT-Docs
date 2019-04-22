@@ -13,18 +13,17 @@ plugins {
 }
 
 javafx {
-    version = "11"
-    modules = [ 'javafx.controls' ]
+    version = "11.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml']
 }
 
 // Define the main class for the application
-mainClassName = 'App'
+mainClassName = 'com.sisterhore.AppGUI'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     compile 'com.google.guava:guava:23.0'
     compile "org.java-websocket:Java-WebSocket:1.4.0"
-
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
