@@ -17,11 +17,15 @@ public class Controller {
 
   public Controller(int serverPort) throws UnknownHostException {
     this.setServerPort(serverPort);
-    this.server = new Server(this, serverPort);
-    this.server.start();
+    this.serverPort = serverPort;
     this.peers = new ArrayList<>();
   }
 
+  public void startServer() throws UnknownHostException {
+    this.server = new Server(this, this.serverPort);
+    this.server.start();
+    System.out.println("Server started");
+  }
   /**
    * @return the serverPort
    */

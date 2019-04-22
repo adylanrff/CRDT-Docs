@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import com.sisterhore.controller.Controller;
+import com.sisterhore.view.GUIController;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,15 +19,20 @@ import javafx.stage.Stage;
 public class AppGUI extends Application {
 
   private static final String MY_FIRST_JAVA_FX_APP = "CRDT Docs";
+  private static Controller controller = null;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle(MY_FIRST_JAVA_FX_APP);
     
-    FXMLLoader loader = new FXMLLoader();
-    AnchorPane anchorPane = FXMLLoader.load(getClass().getResource("/assets/crdt-docs.fxml"));    
-
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/crdt-docs.fxml"));
+    AnchorPane anchorPane = loader.load();    
     Scene scene = new Scene(anchorPane);
+    GUIController guiController = loader.getController();
+    System.out.println("GUI controller" + guiController);
+    guiController.setController(controller);
+    controller.startServer();
+
     primaryStage.setScene(scene);
     primaryStage.setWidth(800.0);
     primaryStage.setHeight(600.0);
@@ -35,7 +41,6 @@ public class AppGUI extends Application {
 
   public static void main(String[] args) throws IOException, URISyntaxException {
     int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
-    Controller controller = null;
     try {
       controller = new Controller(port);
       launch(args);
