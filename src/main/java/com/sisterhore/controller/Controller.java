@@ -102,4 +102,8 @@ public class Controller {
   public void handleLocalInsert(){
 
   }
+
+  public void handleLocalDelete(){
+
+  }
 }
