@@ -1,14 +1,13 @@
 package com.sisterhore.controller;
 
-import com.sisterhore.crdt.Char;
-import com.sisterhore.version.Version;
-
-enum OperationType {
-  DELETE, INSERT
-}
-
 public class Operation {
   public OperationType operationType;
-  public Char characterUsed;
-  public Version version;
+  public char characterUsed;
+  public int index;
+
+  public Operation(OperationType operationType, char characterUsed, int index){
+      this.operationType = operationType;
+      this.characterUsed = characterUsed;
+      this.index = index;
+  }
 }
