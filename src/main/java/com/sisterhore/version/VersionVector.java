@@ -1,17 +1,18 @@
 package com.sisterhore.version;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class VersionVector {
-  private int siteId;
-  private ArrayList<Version> struct;
+  private String siteId;
+  private HashMap<String, Version> struct;
   private Version localVersion;
 
-  public VersionVector(int siteId) {
+  public VersionVector(String siteId) {
     this.siteId = siteId;
-    this.struct = new ArrayList<>();
+    this.struct = new HashMap<>();
     this.localVersion = new Version(siteId);
-    this.struct.add(this.localVersion);
+    this.struct.put(siteId, this.localVersion);
   }
 
   /**
@@ -24,7 +25,7 @@ public class VersionVector {
    * Returns site ID
    * @return owned site ID
    */
-  public int getSiteId() { return this.siteId; }
+  public String getSiteId() { return this.siteId; }
 
   /**
    * Check if certain operation has been applied before

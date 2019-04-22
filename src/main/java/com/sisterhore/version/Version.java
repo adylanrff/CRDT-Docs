@@ -1,19 +1,19 @@
 package com.sisterhore.version;
 
 public class Version {
-  private int siteId;
+  private String siteId;
   private int counter;
 
-  public Version(int siteId) {
+  public Version(String siteId) {
     this.siteId = siteId;
     this.counter = 0;
   }
 
-  public int getSiteId() { return this.siteId; }
+  public String getSiteId() { return this.siteId; }
 
   public int getCounter() { return this.counter; }
 
-  public void setSiteId(int siteId) {
+  public void setSiteId(String siteId) {
     this.siteId = siteId;
   }
 

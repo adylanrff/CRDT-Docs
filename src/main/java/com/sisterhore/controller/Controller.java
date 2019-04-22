@@ -19,10 +19,10 @@ public class Controller {
 
   public Controller(int serverPort) throws UnknownHostException {
     this.setServerPort(serverPort);
-    this.serverPort = serverPort;
     this.peers = new ArrayList<String>();
     this.clients = new ArrayList<Client>();
-    this.versionVector = new VersionVector(1);
+    String uri = String.format("ws://localhost:%d", this.serverPort);
+    this.versionVector = new VersionVector(uri);
   }
 
   public void startServer() throws UnknownHostException {
