@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.sisterhore.crdt.CRDT;
+import com.sisterhore.version.VersionVector;
 
 public class Controller {
   private ArrayList<Client> clients;
   private Server server;
   private CRDT crdt;
+  private VersionVector versionVector;
   private int serverPort;
   private ArrayList<String> peers;
 
@@ -20,6 +22,7 @@ public class Controller {
     this.serverPort = serverPort;
     this.peers = new ArrayList<String>();
     this.clients = new ArrayList<Client>();
+    this.versionVector = new VersionVector(1);
   }
 
   public void startServer() throws UnknownHostException {
@@ -82,6 +85,10 @@ public class Controller {
 
   public boolean isContainPeer(String uri){
     return this.peers.contains(uri);
+  }
+
+  public void handleRemoteOperation(Operation operation) {
+//    if (this.versionVector.isApplied(operation))
   }
 
   public void handleRemoteInsert(){
