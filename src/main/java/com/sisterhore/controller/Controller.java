@@ -7,15 +7,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.sisterhore.crdt.CRDT;
+import com.sisterhore.version.Version;
 import com.sisterhore.version.VersionVector;
 
 public class Controller {
   private ArrayList<Client> clients;
   private Server server;
-  private CRDT crdt;
-  private VersionVector versionVector;
   private int serverPort;
   private ArrayList<String> peers;
+  private CRDT crdt;
+  private VersionVector versionVector;
+  private ArrayList<Operation> deletionBuffer;
 
   public Controller(int serverPort) throws UnknownHostException {
     this.setServerPort(serverPort);
@@ -23,6 +25,7 @@ public class Controller {
     this.clients = new ArrayList<Client>();
     String uri = String.format("ws://localhost:%d", this.serverPort);
     this.versionVector = new VersionVector(uri);
+    this.deletionBuffer = new ArrayList<>();
   }
 
   public void startServer() throws UnknownHostException {
@@ -88,7 +91,31 @@ public class Controller {
   }
 
   public void handleRemoteOperation(Operation operation) {
-//    if (this.versionVector.isApplied(operation))
+    if (this.versionVector.isApplied(operation.getVersion())) return;
+    if (operation.getOperationType() == OperationType.INSERT)
+      this.applyOperation(operation);
+    else if (operation.getOperationType() == OperationType.DELETE)
+      this.deletionBuffer.add(operation);
+
+    this.processDeletionBuffer();
+  }
+
+  public void applyOperation(Operation operation) {
+    if (operation.getOperationType() == OperationType.DELETE)
+      this.crdt.localDelete(operation.getIndex());
+    else if (operation.getOperationType() == OperationType.INSERT)
+      this.crdt.localInsert(operation.getCharacterUsed(), operation.getIndex());
+  }
+
+  public void processDeletionBuffer() {
+    for (int i = 0; i < this.deletionBuffer.size(); i++) {
+      Operation delete = this.deletionBuffer.get(i);
+      boolean isInserted = this.versionVector.isApplied(delete.getVersion());
+      if (isInserted) {
+        this.applyOperation(delete);
+        this.deletionBuffer.remove(i);
+      }
+    }
   }
 
   public void handleRemoteInsert(){
