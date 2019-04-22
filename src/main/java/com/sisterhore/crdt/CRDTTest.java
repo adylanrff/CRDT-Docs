@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class CRDTTest {
 
   public void run() {
-    CRDT crdt = new CRDT(0);
+    CRDT crdt = new CRDT("ws://localhost:8887");
     Scanner reader = new Scanner(System.in);
     for (int i = 0; i < 5; i++) {
       System.out.print("Insert a character: ");
