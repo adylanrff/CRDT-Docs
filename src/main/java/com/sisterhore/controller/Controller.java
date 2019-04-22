@@ -13,12 +13,12 @@ public class Controller {
   private ArrayList<Client> clients;
   private Server server;
   private CRDT crdt;
-  private VersionVector versionVector;
+  public VersionVector versionVector;
   private int serverPort;
   private ArrayList<String> peers;
 
   public Controller(int serverPort) throws UnknownHostException {
-    this.setServerPort(serverPort);
+    this.serverPort = serverPort;
     this.peers = new ArrayList<String>();
     this.clients = new ArrayList<Client>();
     String uri = String.format("ws://localhost:%d", this.serverPort);
@@ -35,13 +35,6 @@ public class Controller {
    */
   public int getServerPort() {
     return serverPort;
-  }
-
-  /**
-   * @param serverPort the serverPort to set
-   */
-  public void setServerPort(int serverPort) {
-    this.serverPort = serverPort;
   }
 
   public void connectToPeer(String uri) throws URISyntaxException {

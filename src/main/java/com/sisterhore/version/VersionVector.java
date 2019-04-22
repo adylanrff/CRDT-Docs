@@ -22,6 +22,11 @@ public class VersionVector {
   public Version getLocalVersion() { return this.localVersion; }
 
   /**
+   * Increment local version
+   */
+  public void incrementLocalVersion() { this.localVersion.incrementCounter(); }
+
+  /**
    * Returns site ID
    * @return owned site ID
    */

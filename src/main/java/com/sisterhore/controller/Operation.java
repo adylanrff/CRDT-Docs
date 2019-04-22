@@ -1,13 +1,42 @@
 package com.sisterhore.controller;
 
-public class Operation {
-  public OperationType operationType;
-  public char characterUsed;
-  public int index;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Base64;
 
-  public Operation(OperationType operationType, char characterUsed, int index){
-      this.operationType = operationType;
-      this.characterUsed = characterUsed;
-      this.index = index;
-  }
+import com.sisterhore.util.Serializer;
+import com.sisterhore.version.Version;
+
+public class Operation implements Serializable {
+	private static final long serialVersionUID = 1L;
+	public OperationType operationType;
+	public char characterUsed;
+	public int index;
+	public Version version;
+
+	public Operation(OperationType operationType, char characterUsed, int index, Version version) {
+		this.operationType = operationType;
+		this.characterUsed = characterUsed;
+		this.index = index;
+		this.version = version;
+	}
+
+	public String toString() {
+		String output = String.format("operationType: %s\ncharacter: %c\nindex: %d\nsiteId: %s\nversion: %d",
+				this.operationType.toString(), this.characterUsed, this.index, this.version.getSiteId(),
+				this.version.getCounter());
+
+		return output;
+	}
+
+	public static Operation getOperation(String message) {
+		byte[] bytes = Base64.getDecoder().decode(message);
+		Operation operation = null;
+		try {
+			operation = (Operation) Serializer.deserialize(bytes);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		return operation;
+	}
 }

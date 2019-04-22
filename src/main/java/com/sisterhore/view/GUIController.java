@@ -1,17 +1,21 @@
 package com.sisterhore.view;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.ResourceBundle;
 
 import com.sisterhore.controller.Controller;
+import com.sisterhore.controller.Operation;
+import com.sisterhore.controller.OperationType;
+import com.sisterhore.util.Serializer;
+import com.sisterhore.version.Version;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 
 /**
  * GUIView
@@ -37,23 +41,55 @@ public class GUIController implements Initializable {
     });
   }
 
-  private int getChangedIndex(String oldValue, String newValue) {
-    if (oldValue.length()==0){
-      return 0;
-    }
+  private Operation getOperation(String oldValue, String newValue, Version version) {    
+    OperationType operationType = OperationType.DELETE;
+    if (oldValue.length() < newValue.length()){
+      operationType = OperationType.INSERT;  
+    } 
+
+    int index = 0;
+    char value = ' ';
     int shortestLength = oldValue.length() > newValue.length()? newValue.length(): oldValue.length();
-    for (int i = 0; i<shortestLength; i++){
+
+    int i = 0;
+    for (; i < shortestLength; i++){
       if (oldValue.charAt(i) != newValue.charAt(i)){
-        return i;
+        index = i;
+        if (operationType == OperationType.INSERT){
+          value = newValue.charAt(i);
+        } else {
+          value = oldValue.charAt(i);
+        }
+        break;
       }
     }
 
-    return shortestLength;
+    if (i == shortestLength){
+      if (operationType == OperationType.INSERT){
+        value = newValue.charAt(shortestLength);
+      } else {
+        value = oldValue.charAt(shortestLength);
+      }
+      index = shortestLength;
+    }
+
+    Operation operation = new Operation(operationType, value, index, version);
+    
+    return operation;
   }
   
   public void handleDocsTextChanged() {
     docs_textfield.textProperty().addListener((observable, oldValue, newValue) -> {
-      System.out.println(this.getChangedIndex(oldValue, newValue));
+      this.controller.versionVector.incrementLocalVersion();
+      Version version = this.controller.versionVector.getLocalVersion();
+      Operation operation = this.getOperation(oldValue, newValue, version);
+      try {
+        byte[] operationData = Serializer.serialize(operation);
+        String operationDataString = Base64.getEncoder().encodeToString(operationData);
+        this.controller.sendMessage(operationDataString);
+      } catch(IOException e){
+        e.printStackTrace();
+      }
     });
   }
 
