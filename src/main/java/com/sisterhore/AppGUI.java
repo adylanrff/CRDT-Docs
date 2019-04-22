@@ -12,7 +12,7 @@ import com.sisterhore.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class AppGUI extends Application {
@@ -22,14 +22,14 @@ public class AppGUI extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle(MY_FIRST_JAVA_FX_APP);
-
+    
     FXMLLoader loader = new FXMLLoader();
-    VBox vbox = FXMLLoader.load(getClass().getResource("/assets/example.fxml"));    
+    AnchorPane anchorPane = FXMLLoader.load(getClass().getResource("/assets/crdt-docs.fxml"));    
 
-    Scene scene = new Scene(vbox);
+    Scene scene = new Scene(anchorPane);
     primaryStage.setScene(scene);
-    primaryStage.setWidth(120.0);
-    primaryStage.setHeight(120.0);
+    primaryStage.setWidth(800.0);
+    primaryStage.setHeight(600.0);
     primaryStage.show();
   }
 
