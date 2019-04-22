@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class CRDT {
-  private int siteId;
+  private String siteId;
   private ArrayList<Char> struct;
   private HashMap<Integer, BoundaryType> strategyChoice;
   private int base;
@@ -14,7 +14,7 @@ public class CRDT {
   }
   static final int boundary = 10;
 
-  public CRDT(int siteId){
+  public CRDT(String siteId){
     this.siteId = siteId;
     this.struct = new ArrayList<>();
     this.strategyChoice = new HashMap<>();
@@ -24,14 +24,14 @@ public class CRDT {
   /**
    * @return the siteId
    */
-  public int getSiteId() {
+  public String getSiteId() {
     return siteId;
   }
 
   /**
    * @param siteId the siteId to set
    */
-  public void setSiteId(int siteId) {
+  public void setSiteId(String siteId) {
     this.siteId = siteId;
   }
 

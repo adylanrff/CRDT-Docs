@@ -16,11 +16,11 @@ public class Controller {
   private int serverPort;
   private ArrayList<String> peers;
   private CRDT crdt;
-  private VersionVector versionVector;
+  public VersionVector versionVector;
   private ArrayList<Operation> deletionBuffer;
 
   public Controller(int serverPort) throws UnknownHostException {
-    this.setServerPort(serverPort);
+    this.serverPort = serverPort;
     this.peers = new ArrayList<String>();
     this.clients = new ArrayList<Client>();
     String uri = String.format("ws://localhost:%d", this.serverPort);
@@ -38,13 +38,6 @@ public class Controller {
    */
   public int getServerPort() {
     return serverPort;
-  }
-
-  /**
-   * @param serverPort the serverPort to set
-   */
-  public void setServerPort(int serverPort) {
-    this.serverPort = serverPort;
   }
 
   public void connectToPeer(String uri) throws URISyntaxException {
@@ -127,6 +120,10 @@ public class Controller {
   }
 
   public void handleLocalInsert(){
+
+  }
+
+  public void handleLocalDelete(){
 
   }
 }

@@ -1,6 +1,8 @@
 package com.sisterhore.version;
 
-public class Version {
+import java.io.Serializable;
+
+public class Version implements Serializable {
   private String siteId;
   private int counter;
 

@@ -64,7 +64,9 @@ public class Client extends WebSocketClient {
 
   @Override
   public void onMessage(String message) {
-    System.out.println("CLIENT "+getURI()+":"+ message);
+    Operation operation = Operation.getOperation(message);
+    System.out.println("CLIENT :"+getURI()+":");
+    System.out.println(operation);
   }
 
   @Override

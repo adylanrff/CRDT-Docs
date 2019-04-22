@@ -24,11 +24,15 @@
  */
 package com.sisterhore.controller;
 
+import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Base64;
+
+import com.sisterhore.util.Serializer;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -85,7 +89,8 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
-		System.out.println(conn + "-SERVER: " + message);
+		Operation operation = Operation.getOperation(message);
+		System.out.println(operation);
 		gossipMessage(conn, message);
 	}
 
@@ -104,7 +109,6 @@ public class Server extends WebSocketServer {
 
 		if( conn != null ) {
 			ex.printStackTrace();
-			// some errors like port binding failed may not be assignable to a specific websocket
 		}
 	}
 

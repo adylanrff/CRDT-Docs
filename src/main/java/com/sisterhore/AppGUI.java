@@ -33,6 +33,9 @@ public class AppGUI extends Application {
     controller.startServer();
 
     primaryStage.setScene(scene);
+    primaryStage.setOnCloseRequest((event)->{
+      System.exit(0);
+    });
     primaryStage.show();
   }
 
