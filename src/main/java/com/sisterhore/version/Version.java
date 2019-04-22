@@ -8,4 +8,8 @@ public class Version {
     this.siteId = siteId;
     this.counter = 0;
   }
+
+  public int getSiteId() { return this.siteId; }
+
+  public int getCounter() { return this.counter; }
 }
