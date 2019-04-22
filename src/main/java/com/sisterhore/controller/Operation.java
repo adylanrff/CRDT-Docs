@@ -8,12 +8,7 @@ enum OperationType {
 }
 
 public class Operation {
-  private OperationType operationType;
-  private Char characterUsed;
-  private Version version;
-  private Integer index;
-
-  public Operation() {
-
-  }
+  public OperationType operationType;
+  public Char characterUsed;
+  public Version version;
 }
