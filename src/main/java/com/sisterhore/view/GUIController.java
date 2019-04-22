@@ -8,21 +8,15 @@ import com.sisterhore.controller.Controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 /**
  * GUIView
  */
-public class GUIController {
-
-  private static final String MY_FIRST_JAVA_FX_APP = "CRDT Collaborative Docs";
+public class GUIController implements Initializable {
 
   @FXML
   private Button btn_connect;
@@ -30,27 +24,47 @@ public class GUIController {
   private TextField host_textfield;
   @FXML
   public TextField docs_textfield;
-  
+
   private Controller controller;
 
   public void handleButtonClick() {
-    EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent e) {
-        System.out.println("Hello World");
-        try {
-          controller.connectToPeer(host_textfield.getText());
-        } catch (URISyntaxException e1) {
-          e1.printStackTrace();
-        }
+    btn_connect.setOnAction((event) -> {
+      try {
+        controller.connectToPeer(host_textfield.getText());
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
       }
-    };
+    });
+  }
 
-    btn_connect.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+  private int getChangedIndex(String oldValue, String newValue) {
+    if (oldValue.length()==0){
+      return 0;
+    }
+    int shortestLength = oldValue.length() > newValue.length()? newValue.length(): oldValue.length();
+    for (int i = 0; i<shortestLength; i++){
+      if (oldValue.charAt(i) != newValue.charAt(i)){
+        return i;
+      }
+    }
+
+    return shortestLength;
+  }
+  
+  public void handleDocsTextChanged() {
+    docs_textfield.textProperty().addListener((observable, oldValue, newValue) -> {
+      System.out.println(this.getChangedIndex(oldValue, newValue));
+    });
   }
 
   public void setController(Controller controller) {
     this.controller = controller;
+  }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    handleButtonClick();
+    handleDocsTextChanged();
   }
 
 }

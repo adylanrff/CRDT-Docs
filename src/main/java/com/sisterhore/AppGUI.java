@@ -24,12 +24,11 @@ public class AppGUI extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle(MY_FIRST_JAVA_FX_APP);
-    
+
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/crdt-docs.fxml"));
-    AnchorPane anchorPane = loader.load();    
+    AnchorPane anchorPane = loader.load();
     Scene scene = new Scene(anchorPane);
     GUIController guiController = loader.getController();
-    System.out.println("GUI controller" + guiController);
     guiController.setController(controller);
     controller.startServer();
 
