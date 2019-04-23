@@ -35,6 +35,14 @@ public class CRDT {
     this.siteId = siteId;
   }
 
+  public String getStructContent() {
+    String output = "";
+    for (int i = 0; i < this.struct.size(); i++) {
+      output += this.struct.get(i).getValue();
+    }
+    return output;
+  }
+
   /**
    * Insert by index on local
    * @param value value of character to be inserted

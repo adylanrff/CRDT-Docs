@@ -35,7 +35,8 @@ public class CLIView extends View implements Runnable {
           e.printStackTrace();
         }
         if (message != "") {
-          controller.sendMessage(message);
+          // Commented out due to unusable
+//          controller.sendMessage(message);
         }
       }
     } else {

@@ -80,15 +80,14 @@ public class GUIController implements Initializable {
   
   public void handleDocsTextChanged() {
     docs_textfield.textProperty().addListener((observable, oldValue, newValue) -> {
-      this.controller.versionVector.incrementLocalVersion();
+//      this.controller.versionVector.incrementLocalVersion();
       Version version = this.controller.versionVector.getLocalVersion();
       Operation operation = this.getOperation(oldValue, newValue, version);
-      try {
-        byte[] operationData = Serializer.serialize(operation);
-        String operationDataString = Base64.getEncoder().encodeToString(operationData);
-        this.controller.sendMessage(operationDataString);
-      } catch(IOException e){
-        e.printStackTrace();
+      boolean status = this.controller.handleRemoteOperation(operation);
+      if (status) {
+        String content = this.controller.getCRDTContent();
+        System.out.println(String.format("CONTENT: %s", content));
+        docs_textfield.setText(content);
       }
     });
   }

@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import com.sisterhore.crdt.CRDT;
+import com.sisterhore.util.Serializer;
 import com.sisterhore.version.Version;
 import com.sisterhore.version.VersionVector;
 
@@ -21,11 +23,12 @@ public class Controller {
 
   public Controller(int serverPort) throws UnknownHostException {
     this.serverPort = serverPort;
-    this.peers = new ArrayList<String>();
-    this.clients = new ArrayList<Client>();
+    this.peers = new ArrayList<>();
+    this.clients = new ArrayList<>();
     String uri = String.format("ws://localhost:%d", this.serverPort);
     this.versionVector = new VersionVector(uri);
     this.deletionBuffer = new ArrayList<>();
+    this.crdt = new CRDT(uri);
   }
 
   public void startServer() throws UnknownHostException {
@@ -65,9 +68,17 @@ public class Controller {
     this.server.stop();
   }
   
-  public void sendMessage(String message){
-    for (Client client : clients) {
-      client.send(message);
+  public boolean sendMessage(Operation operation){
+    try {
+      byte[] operationData = Serializer.serialize(operation);
+      String operationDataString = Base64.getEncoder().encodeToString(operationData);
+      for (Client client : clients) {
+        client.send(operationDataString);
+      }
+      return true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
     }
   }
 
@@ -83,14 +94,15 @@ public class Controller {
     return this.peers.contains(uri);
   }
 
-  public void handleRemoteOperation(Operation operation) {
-    if (this.versionVector.isApplied(operation.getVersion())) return;
+  public boolean handleRemoteOperation(Operation operation) {
+    if (this.versionVector.isApplied(operation.getVersion())) return false;
     if (operation.getOperationType() == OperationType.INSERT)
       this.applyOperation(operation);
     else if (operation.getOperationType() == OperationType.DELETE)
       this.deletionBuffer.add(operation);
 
     this.processDeletionBuffer();
+    return this.sendMessage(operation);
   }
 
   public void applyOperation(Operation operation) {
@@ -98,6 +110,8 @@ public class Controller {
       this.crdt.localDelete(operation.getIndex());
     else if (operation.getOperationType() == OperationType.INSERT)
       this.crdt.localInsert(operation.getCharacterUsed(), operation.getIndex());
+
+    this.versionVector.update(operation.getVersion());
   }
 
   public void processDeletionBuffer() {
@@ -109,6 +123,10 @@ public class Controller {
         this.deletionBuffer.remove(i);
       }
     }
+  }
+
+  public String getCRDTContent() {
+    return this.crdt.getStructContent();
   }
 
   public void handleRemoteInsert(){

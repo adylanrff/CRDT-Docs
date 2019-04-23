@@ -32,7 +32,7 @@ public class Operation implements Serializable {
   public int getIndex() { return this.index; }
 
 	public String toString() {
-		String output = String.format("operationType: %s\ncharacter: %c\nindex: %d\nsiteId: %s\nversion: %d",
+		String output = String.format("operationType: %s\ncharacter: %c\nindex: %d\nsiteId: %s\nversion: %d\n",
 				this.operationType.toString(), this.characterUsed, this.index, this.version.getSiteId(),
 				this.version.getCounter());
 
