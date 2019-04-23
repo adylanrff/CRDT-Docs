@@ -33,6 +33,7 @@ public class GUIController implements Initializable {
 
   public void setDocTextField(String text){
     docs_textfield.setText(text);
+    docs_textfield.positionCaret(text.length());
   }
 
   public void handleButtonClick() {

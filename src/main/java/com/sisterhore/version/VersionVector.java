@@ -55,6 +55,7 @@ public class VersionVector {
   public boolean isApplied(Version incomingVersion) {
     Version localIncomingVersion = this.findVersion(incomingVersion);
     if (localIncomingVersion == null) return false;
+    System.out.println(String.format("COUNTERS: %d %d", incomingVersion.getCounter(), localIncomingVersion.getCounter()));
     return incomingVersion.getCounter() <= localIncomingVersion.getCounter();
   }
 

@@ -35,6 +35,8 @@ public class CRDT {
     this.siteId = siteId;
   }
 
+  public Char getChar(int index) { return this.struct.get(index); }
+
   public String getStructContent() {
     String output = "";
     for (int i = 0; i < this.struct.size(); i++) {

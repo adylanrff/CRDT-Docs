@@ -31,6 +31,15 @@ public class Char {
    */
   public ArrayList<Integer> getPosition() { return position; }
 
+  public String printPosition() {
+    String output = "";
+    for (int i = 0; i < this.position.size(); i++) {
+      output += this.position.get(i).toString();
+      output += " ";
+    }
+    return output;
+  }
+
   /**
    * @param value the value to set
    */

@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import com.sisterhore.crdt.CRDT;
+import com.sisterhore.crdt.Char;
 import com.sisterhore.util.Serializer;
 import com.sisterhore.version.Version;
 import com.sisterhore.version.VersionVector;
@@ -39,6 +40,8 @@ public class Controller {
   public GUIController getGuiController() {
     return guiController;
   }
+
+  public CRDT getCrdt() { return this.crdt; }
 
   /**
    * @param guiController the guiController to set
@@ -133,8 +136,19 @@ public class Controller {
   public void processDeletionBuffer() {
     for (int i = 0; i < this.deletionBuffer.size(); i++) {
       Operation delete = this.deletionBuffer.get(i);
+      Version deleteVersion = delete.getVersion();
+      Char deleteChar = this.crdt.getChar(delete.getIndex());
       boolean isInserted = this.versionVector.isApplied(delete.getVersion());
+
+      // LOG
+      System.out.println(String.format("PROCESS BUFFER, %b", isInserted));
+      System.out.println(String.format("VERSION: %s %d", deleteVersion.getSiteId(), deleteVersion.getCounter()));
+      System.out.println(String.format("CHARACTER: %s %c %s", deleteChar.getSiteId(), deleteChar.getValue(), deleteChar.printPosition()));
+
       if (isInserted) {
+        this.applyOperation(delete);
+        this.deletionBuffer.remove(i);
+      } else {
         this.applyOperation(delete);
         this.deletionBuffer.remove(i);
       }
