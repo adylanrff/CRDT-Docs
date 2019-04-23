@@ -39,8 +39,11 @@ public class VersionVector {
     Version existing = this.findVersion(incomingVersion);
     if (existing == null) {
       Version newVersion = new Version(incomingVersion.getSiteId());
+      newVersion.update(incomingVersion);
+      this.struct.put(newVersion.getSiteId(), newVersion);
     } else {
-      existing.incrementCounter();
+      existing.update(incomingVersion);
+      this.struct.put(existing.getSiteId(), existing);
     }
   }
 
@@ -51,13 +54,8 @@ public class VersionVector {
    */
   public boolean isApplied(Version incomingVersion) {
     Version localIncomingVersion = this.findVersion(incomingVersion);
-    System.out.println(String.format("Local incoming version ID: %s & Counter: %d", localIncomingVersion.getSiteId(), localIncomingVersion.getCounter()));
-    System.out.println(String.format("Incoming version ID: %s & Counter: %d", incomingVersion.getSiteId(), incomingVersion.getCounter()));
-
-    return false;
-
-//    if (localIncomingVersion == null) return false;
-//    return incomingVersion.getCounter() <= localIncomingVersion.getCounter();
+    if (localIncomingVersion == null) return false;
+    return incomingVersion.getCounter() <= localIncomingVersion.getCounter();
   }
 
   /**
@@ -67,7 +65,6 @@ public class VersionVector {
    */
   public Version findVersion(Version version) {
     Version foundVersion = null;
-//    System.out.println(String.format("Struct size: %d", this.struct.size()));
     if (this.struct.containsKey(version.getSiteId()))
       foundVersion = this.struct.get(version.getSiteId());
     return foundVersion;

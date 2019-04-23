@@ -23,8 +23,10 @@ public class Version implements Serializable {
     this.counter = counter;
   }
 
-  public void incrementCounter(){
-    this.counter++;
-  };
+  public void incrementCounter(){ this.counter++; };
+
+  public void update(Version incomingVersion) {
+    this.counter = incomingVersion.getCounter();
+  }
 
 }

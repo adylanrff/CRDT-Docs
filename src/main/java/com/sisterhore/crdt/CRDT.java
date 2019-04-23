@@ -53,6 +53,7 @@ public class CRDT {
     this.struct.add(index, newChar);
     // LOG
     this.printStruct();
+    System.out.println(String.format("Site ID: %s", this.siteId));
   }
 
   /**

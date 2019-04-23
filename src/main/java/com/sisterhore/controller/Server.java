@@ -91,6 +91,7 @@ public class Server extends WebSocketServer {
 	public void onMessage(WebSocket conn, String message) {
 		Operation operation = Operation.getOperation(message);
 		System.out.println(operation);
+		this.controller.handleRemoteOperation(operation);
 		gossipMessage(conn, message);
 	}
 

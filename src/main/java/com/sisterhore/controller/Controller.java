@@ -73,6 +73,7 @@ public class Controller {
       byte[] operationData = Serializer.serialize(operation);
       String operationDataString = Base64.getEncoder().encodeToString(operationData);
       for (Client client : clients) {
+        System.out.println(String.format("Client: %s", client.getURI()));
         client.send(operationDataString);
       }
       return true;
@@ -94,15 +95,15 @@ public class Controller {
     return this.peers.contains(uri);
   }
 
-  public boolean handleRemoteOperation(Operation operation) {
-    if (this.versionVector.isApplied(operation.getVersion())) return false;
+  public void handleRemoteOperation(Operation operation) {
+    System.out.println("Handle Remote");
+    if (this.versionVector.isApplied(operation.getVersion())) return;
     if (operation.getOperationType() == OperationType.INSERT)
       this.applyOperation(operation);
     else if (operation.getOperationType() == OperationType.DELETE)
       this.deletionBuffer.add(operation);
 
     this.processDeletionBuffer();
-    return this.sendMessage(operation);
   }
 
   public void applyOperation(Operation operation) {
