@@ -11,6 +11,7 @@ import com.sisterhore.crdt.CRDT;
 import com.sisterhore.util.Serializer;
 import com.sisterhore.version.Version;
 import com.sisterhore.version.VersionVector;
+import com.sisterhore.view.GUIController;
 
 public class Controller {
   private ArrayList<Client> clients;
@@ -20,6 +21,7 @@ public class Controller {
   private CRDT crdt;
   public VersionVector versionVector;
   private ArrayList<Operation> deletionBuffer;
+  private GUIController guiController;
 
   public Controller(int serverPort) throws UnknownHostException {
     this.serverPort = serverPort;
@@ -29,6 +31,20 @@ public class Controller {
     this.versionVector = new VersionVector(uri);
     this.deletionBuffer = new ArrayList<>();
     this.crdt = new CRDT(uri);
+  }
+
+  /**
+   * @return the guiController
+   */
+  public GUIController getGuiController() {
+    return guiController;
+  }
+
+  /**
+   * @param guiController the guiController to set
+   */
+  public void setGuiController(GUIController guiController) {
+    this.guiController = guiController;
   }
 
   public void startServer() throws UnknownHostException {
@@ -102,7 +118,6 @@ public class Controller {
       this.applyOperation(operation);
     else if (operation.getOperationType() == OperationType.DELETE)
       this.deletionBuffer.add(operation);
-
     this.processDeletionBuffer();
   }
 

@@ -31,6 +31,10 @@ public class GUIController implements Initializable {
 
   private Controller controller;
 
+  public void setDocTextField(String text){
+    docs_textfield.setText(text);
+  }
+
   public void handleButtonClick() {
     btn_connect.setOnAction((event) -> {
       try {
@@ -85,7 +89,7 @@ public class GUIController implements Initializable {
       Operation operation = this.getOperation(oldValue, newValue, version);
       this.controller.sendMessage(operation);
     });
-  }
+  };
 
   public void setController(Controller controller) {
     this.controller = controller;

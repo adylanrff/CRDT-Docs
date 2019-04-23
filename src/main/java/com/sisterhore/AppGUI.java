@@ -20,6 +20,7 @@ public class AppGUI extends Application {
 
   private static final String MY_FIRST_JAVA_FX_APP = "CRDT Docs";
   private static Controller controller = null;
+  private static GUIController guiController = null;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -28,10 +29,10 @@ public class AppGUI extends Application {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/crdt-docs.fxml"));
     AnchorPane anchorPane = loader.load();
     Scene scene = new Scene(anchorPane);
-    GUIController guiController = loader.getController();
+    guiController = loader.getController();
     guiController.setController(controller);
     controller.startServer();
-
+    controller.setGuiController(guiController);
     primaryStage.setScene(scene);
     primaryStage.setOnCloseRequest((event)->{
       System.exit(0);

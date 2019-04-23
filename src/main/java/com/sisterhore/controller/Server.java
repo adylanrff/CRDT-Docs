@@ -24,15 +24,11 @@
  */
 package com.sisterhore.controller;
 
-import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Base64;
-
-import com.sisterhore.util.Serializer;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -93,6 +89,9 @@ public class Server extends WebSocketServer {
 		System.out.println(operation);
 		this.controller.handleRemoteOperation(operation);
 		gossipMessage(conn, message);
+		String crdtContent = this.controller.getCRDTContent();
+		System.out.println(crdtContent);
+		this.controller.getGuiController().setDocTextField(crdtContent);
 	}
 
 	@Override
