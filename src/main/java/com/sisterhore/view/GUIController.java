@@ -2,6 +2,7 @@ package com.sisterhore.view;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.ResourceBundle;
@@ -36,6 +37,10 @@ public class GUIController implements Initializable {
       try {
         controller.connectToPeer(host_textfield.getText());
       } catch (URISyntaxException e) {
+        e.printStackTrace();
+      } catch (UnknownHostException e){
+        e.printStackTrace();
+      } catch (IOException e){
         e.printStackTrace();
       }
     });

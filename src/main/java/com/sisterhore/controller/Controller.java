@@ -27,7 +27,7 @@ public class Controller {
 
   public void startServer() throws UnknownHostException {
     this.server = new Server(this, this.serverPort);
-    this.server.start();
+    new Thread(this.server).start();
     System.out.println("Server started");
   }
   /**
@@ -37,7 +37,7 @@ public class Controller {
     return serverPort;
   }
 
-  public void connectToPeer(String uri) throws URISyntaxException {
+  public void connectToPeer(String uri) throws URISyntaxException, UnknownHostException, IOException {
     if (!this.peers.contains(uri)) {
       Map<String, String> httpHeaders = new HashMap<String, String>();
       httpHeaders.put("server_port", String.valueOf(this.serverPort));
@@ -49,7 +49,7 @@ public class Controller {
     }
   }
 
-  public void closeClient(String uri) {
+  public void closeClient(String uri) throws IOException {
     for (Client client : clients) {
       if (client.getURI().toString() == uri){
         client.close();
@@ -62,7 +62,7 @@ public class Controller {
     this.server.stop();
   }
   
-  public void sendMessage(String message){
+  public void sendMessage(String message) throws IOException {
     for (Client client : clients) {
       client.send(message);
     }

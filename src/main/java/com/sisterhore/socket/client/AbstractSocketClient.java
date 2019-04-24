@@ -12,8 +12,8 @@ import java.net.UnknownHostException;
  */
 public abstract class AbstractSocketClient {
   private Socket clientSocket;
-  private String host;
-  private int port;
+  protected String host;
+  protected int port;
   private PrintWriter out;
   private BufferedReader in;
 
@@ -22,11 +22,15 @@ public abstract class AbstractSocketClient {
     this.port = port;
   }
 
+  public String getURI(){
+    return String.format("%s:%d", this.host, this.port);
+  }
+
   public String getAddress(){
     return this.host;
   }
 
-  public void start() throws UnknownHostException, IOException {
+  public void connect() throws UnknownHostException, IOException {
     clientSocket = new Socket(this.host, this.port);
     out = new PrintWriter(clientSocket.getOutputStream(), true);
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

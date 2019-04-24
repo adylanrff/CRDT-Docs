@@ -26,82 +26,90 @@ package com.sisterhore.controller;
 
 import java.io.IOException;
 import java.net.BindException;
-import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.Base64;
 
+import com.sisterhore.socket.server.AbstractSocketServer;
+import com.sisterhore.util.Handshake;
 import com.sisterhore.util.Serializer;
+import com.sisterhore.util.SocketComm;
 
-import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
-
-public class Server extends WebSocketServer {
+public class Server extends AbstractSocketServer {
 
 	private Controller controller;
 
 	public Server(Controller controller, int port) throws UnknownHostException {
-		super(new InetSocketAddress(port));
-		this.setReuseAddr(true);
+		super(port);
+		// this.setReuseAddr(true);
 		this.controller = controller;
 	}
 
-	public Server(InetSocketAddress address) {
-		super(address);
-	}
+	// public Server(InetSocketAddress address) {
+	// 	super(address);
+	// }
 
-	public void gossipMessage(WebSocket senderConn, String message){
-		for (WebSocket conn: this.getConnections()){
+	public void gossipMessage(Socket senderConn, String message) throws IOException {
+		for (Socket conn: this.getConnections()){
 			if (senderConn != conn){
-				conn.send(message);
+				SocketComm.write(senderConn, message);
 			}
 		}
 	}
 
 	@Override
-	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		conn.send("SERVER: Welcome to the server!"); // This method sends a message to the new client
-		broadcast("SERVER: new connection: " + handshake.getResourceDescriptor()); // This method sends a message to all clients
-		String address = conn.getRemoteSocketAddress().getAddress().getHostAddress();
-		String peerUri = "ws://"+ address + ":"+handshake.getFieldValue("server_port");
+	public void onOpen(Socket conn) {
+		byte[] handshakeData;
+		Handshake handshake = null;
+		try {
+			handshakeData = SocketComm.read(conn).getBytes();
+			handshake = (Handshake) Serializer.deserialize(handshakeData);
+			System.out.println(handshake);
+			SocketComm.write(conn, "SERVER: Welcome to the server!"); // This method sends a message to the new client
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		String peerUri = handshake.host+":"+handshake.port;
 		try {
 			if (!this.controller.isContainPeer(peerUri)){
 				if (this.controller != null){
 					this.controller.connectToPeer(peerUri);
-					System.out.println(address + " connected!");
+					System.out.println(peerUri + " connected!");
 				} else {
 					System.out.println("Make sure to bind controller!");				
 				}
 			} 
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		broadcast(conn + "SERVER:  disconnected!");
+	public void onClose(Socket conn) {
 		System.out.println(conn + "SERVER:  disconnected!");
-		this.controller.deletePeer(this.getAddress().toString());
+		this.controller.deletePeer(conn.getInetAddress().getHostAddress());
 	}
 
 	@Override
-	public void onMessage(WebSocket conn, String message) {
+	public void onMessage(Socket conn, String message) {
 		Operation operation = Operation.getOperation(message);
 		System.out.println(operation);
-		gossipMessage(conn, message);
+		try {
+			gossipMessage(conn, message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public void onMessage(WebSocket conn, ByteBuffer message) {
-		broadcast(message.array());
-		System.out.println(conn + "-SERVER: " + message);
-	}
-
-	@Override
-	public void onError( WebSocket conn, Exception ex ) {
+	public void onError( Socket conn, Exception ex ) {
 		if (ex.getClass() != null && ex.getClass() == BindException.class){
 			System.err.println("Address already in use");
 			System.exit(1);
@@ -110,11 +118,6 @@ public class Server extends WebSocketServer {
 		if( conn != null ) {
 			ex.printStackTrace();
 		}
-	}
-
-	@Override
-	public void onStart() {
-		setConnectionLostTimeout(100);
 	}
 
 }

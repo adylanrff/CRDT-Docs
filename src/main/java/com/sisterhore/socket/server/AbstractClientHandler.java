@@ -10,7 +10,7 @@ public abstract class AbstractClientHandler extends Thread {
   private Socket clientSocket;
   private PrintWriter out;
   private BufferedReader in;
-
+  
   public AbstractClientHandler(Socket socket) {
     this.clientSocket = socket;
     // this.onOpen(socket);
