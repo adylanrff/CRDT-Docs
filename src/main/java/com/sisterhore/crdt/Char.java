@@ -1,8 +1,13 @@
 package com.sisterhore.crdt;
 
-import java.util.ArrayList;
+import com.sisterhore.util.Serializer;
 
-public class Char {
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Base64;
+
+public class Char implements Serializable {
   private String siteId;
   private char value;
   private ArrayList<Integer> position;
@@ -31,6 +36,15 @@ public class Char {
    */
   public ArrayList<Integer> getPosition() { return position; }
 
+  public String printPosition() {
+    String output = "";
+    for (int i = 0; i < this.position.size(); i++) {
+      output += this.position.get(i).toString();
+      output += " ";
+    }
+    return output;
+  }
+
   /**
    * @param value the value to set
    */
@@ -49,5 +63,26 @@ public class Char {
    * @param position the position to set
    */
   public void setPosition(ArrayList<Integer> position) { this.position = position; }
+
+  public static Char getChar(String message) {
+    byte[] bytes = Base64.getDecoder().decode(message);
+    Char newChar = null;
+    try {
+      newChar = (Char) Serializer.deserialize(bytes);
+    } catch (ClassNotFoundException | IOException e) {
+      e.printStackTrace();
+    }
+    return newChar;
+  }
+
+  public boolean isEqual(Char other) {
+    int minSize = Math.min(this.position.size(), other.getPosition().size());
+    for (int i = 0; i < minSize; i++) {
+      int thisIndex = this.position.get(i);
+      int otherIndex = other.getPosition().get(i);
+      if (thisIndex != otherIndex) return false;
+    }
+    return true;
+  }
 
 }

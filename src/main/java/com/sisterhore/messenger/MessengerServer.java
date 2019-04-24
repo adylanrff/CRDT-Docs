@@ -56,23 +56,22 @@ public class MessengerServer extends AbstractSocketServer {
 			byte[] bytes = Base64.getDecoder().decode(handshakeData);
 			handshake = (Handshake) Serializer.deserialize(bytes);
 			System.out.println(handshake);
-			SocketComm.write(conn, "SERVER: Welcome to the server!"); // This method sends a message to the new client
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		String peerUri = handshake.host+":"+handshake.port;
+
+		String peerUri = handshake.host + ":" + handshake.port;
 		try {
-			if (!this.controller.isContainPeer(peerUri)){
-				if (this.controller != null){
+			if (!this.controller.isContainPeer(peerUri)) {
+				if (this.controller != null) {
 					this.controller.connectToPeer(peerUri);
 					System.out.println(peerUri + " connected!");
 				} else {
-					System.out.println("Make sure to bind controller!");				
+					System.out.println("Make sure to bind controller!");
 				}
-			} 
+			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -92,16 +91,19 @@ public class MessengerServer extends AbstractSocketServer {
 	public void onMessage(Socket conn, String message) {
 		Operation operation = Operation.getOperation(message);
 		System.out.println(operation);
+		this.controller.handleRemoteOperation(operation);
+		String crdtContent = this.controller.getCRDTContent();
+		System.out.println(crdtContent);
 	}
 
 	@Override
-	public void onError( Socket conn, Exception ex ) {
-		if (ex.getClass() != null && ex.getClass() == BindException.class){
+	public void onError(Socket conn, Exception ex) {
+		if (ex.getClass() != null && ex.getClass() == BindException.class) {
 			System.err.println("Address already in use");
 			System.exit(1);
 		}
 
-		if( conn != null ) {
+		if (conn != null) {
 			ex.printStackTrace();
 		}
 	}

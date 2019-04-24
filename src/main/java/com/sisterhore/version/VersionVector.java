@@ -1,6 +1,5 @@
 package com.sisterhore.version;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VersionVector {
@@ -33,14 +32,30 @@ public class VersionVector {
   public String getSiteId() { return this.siteId; }
 
   /**
+   * Update version vector with incoming version
+   * @param incomingVersion version to be appended
+   */
+  public void update(Version incomingVersion) {
+    Version existing = this.findVersion(incomingVersion);
+    if (existing == null) {
+      Version newVersion = new Version(incomingVersion.getSiteId());
+      newVersion.update(incomingVersion);
+      this.struct.put(newVersion.getSiteId(), newVersion);
+    } else {
+      existing.update(incomingVersion);
+      this.struct.put(existing.getSiteId(), existing);
+    }
+  }
+
+  /**
    * Check if certain operation has been applied before
    * @param incomingVersion given version
    * @return version exist or not
    */
   public boolean isApplied(Version incomingVersion) {
-    Version localIncomingVersion = this.getVersion(incomingVersion);
-
+    Version localIncomingVersion = this.findVersion(incomingVersion);
     if (localIncomingVersion == null) return false;
+    System.out.println(String.format("COUNTERS: %d %d", incomingVersion.getCounter(), localIncomingVersion.getCounter()));
     return incomingVersion.getCounter() <= localIncomingVersion.getCounter();
   }
 
@@ -49,15 +64,10 @@ public class VersionVector {
    * @param version asked version
    * @return version with same site ID
    */
-  public Version getVersion(Version version) {
+  public Version findVersion(Version version) {
     Version foundVersion = null;
-    for (int i=0; i<this.struct.size(); i++) {
-      Version current = this.struct.get(i);
-      if (version.getSiteId() == current.getSiteId()) {
-        foundVersion = current;
-        break;
-      }
-    }
+    if (this.struct.containsKey(version.getSiteId()))
+      foundVersion = this.struct.get(version.getSiteId());
     return foundVersion;
   }
 

@@ -13,10 +13,12 @@ import com.sisterhore.controller.OperationType;
 import com.sisterhore.util.Serializer;
 import com.sisterhore.version.Version;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 /**
  * GUIView
@@ -31,6 +33,13 @@ public class GUIController implements Initializable {
   public TextField docs_textfield;
 
   private Controller controller;
+  private String oldValue = "";
+  private String newValue = "";
+
+  public void setDocTextField(String text){
+    docs_textfield.setText(text);
+    docs_textfield.positionCaret(text.length());
+  }
 
   public void handleButtonClick() {
     btn_connect.setOnAction((event) -> {
@@ -84,19 +93,15 @@ public class GUIController implements Initializable {
   }
   
   public void handleDocsTextChanged() {
-    docs_textfield.textProperty().addListener((observable, oldValue, newValue) -> {
+    docs_textfield.setOnKeyTyped(ke -> {
+      this.newValue = docs_textfield.getText();
       this.controller.versionVector.incrementLocalVersion();
       Version version = this.controller.versionVector.getLocalVersion();
-      Operation operation = this.getOperation(oldValue, newValue, version);
-      try {
-        byte[] operationData = Serializer.serialize(operation);
-        String operationDataString = Base64.getEncoder().encodeToString(operationData);
-        this.controller.sendMessage(operationDataString);
-      } catch(IOException e){
-        e.printStackTrace();
-      }
+      Operation operation = this.getOperation(this.oldValue, this.newValue, version);
+      this.controller.sendMessage(operation);
+      this.oldValue = this.newValue;
     });
-  }
+  };
 
   public void setController(Controller controller) {
     this.controller = controller;
