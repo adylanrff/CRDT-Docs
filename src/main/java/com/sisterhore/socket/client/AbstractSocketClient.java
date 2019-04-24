@@ -32,14 +32,14 @@ public abstract class AbstractSocketClient {
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
   }
 
-  public String sendMessage(String msg) throws IOException {
+  public String send(String msg) throws IOException {
       out.println(msg);
       String resp = in.readLine();
       this.onMessage(resp);
       return resp;
   }
 
-  public void stopConnection() throws IOException {
+  public void close() throws IOException {
       in.close();
       out.close();
       clientSocket.close();
