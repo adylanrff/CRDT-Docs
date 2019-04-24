@@ -66,7 +66,23 @@ public class CRDT {
   public void remoteInsert(Char data, int index) {
     this.struct.add(index, data);
     String content = this.controller.getCRDTContent();
-//    this.controller.getGuiController().setDocTextField(content);
+    this.controller.getGuiController().setDocTextField(content);
+  }
+
+  public void remoteDelete(Char data) {
+    int index = this.findCharPosition(data);
+    if (index == -1) return;
+    this.struct.remove(index);
+    String content = this.controller.getCRDTContent();
+    this.controller.getGuiController().setDocTextField(content);
+  }
+
+  private int findCharPosition(Char data) {
+    for (int i = 0; i < this.struct.size(); i++) {
+      if (data.isEqual(this.struct.get(i)))
+        return i;
+    }
+    return -1;
   }
 
   /**

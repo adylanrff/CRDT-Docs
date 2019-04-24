@@ -121,7 +121,7 @@ public class Controller {
     if (operation.getOperationType() == OperationType.INSERT)
       operated = this.crdt.localInsert(operation.getCharacterUsed(), operation.getIndex());
     else if (operation.getOperationType() == OperationType.DELETE)
-      this.crdt.localDelete(operation.getIndex());
+      operated = this.crdt.localDelete(operation.getIndex());
     return operated;
   }
 
@@ -137,7 +137,7 @@ public class Controller {
 
   public void applyOperation(Operation operation) {
     if (operation.getOperationType() == OperationType.DELETE)
-      this.crdt.localDelete(operation.getIndex());
+      this.crdt.remoteDelete(operation.getData());
     else if (operation.getOperationType() == OperationType.INSERT)
       this.crdt.remoteInsert(operation.getData(), operation.getIndex());
 

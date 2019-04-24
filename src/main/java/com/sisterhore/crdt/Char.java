@@ -75,4 +75,14 @@ public class Char implements Serializable {
     return newChar;
   }
 
+  public boolean isEqual(Char other) {
+    int minSize = Math.min(this.position.size(), other.getPosition().size());
+    for (int i = 0; i < minSize; i++) {
+      int thisIndex = this.position.get(i);
+      int otherIndex = other.getPosition().get(i);
+      if (thisIndex != otherIndex) return false;
+    }
+    return true;
+  }
+
 }
