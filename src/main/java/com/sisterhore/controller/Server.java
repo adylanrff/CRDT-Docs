@@ -42,20 +42,7 @@ public class Server extends AbstractSocketServer {
 
 	public Server(Controller controller, int port) throws UnknownHostException {
 		super(port);
-		// this.setReuseAddr(true);
 		this.controller = controller;
-	}
-
-	// public Server(InetSocketAddress address) {
-	// 	super(address);
-	// }
-
-	public void gossipMessage(Socket senderConn, String message) throws IOException {
-		for (Socket conn: this.getConnections()){
-			if (senderConn != conn){
-				SocketComm.write(senderConn, message);
-			}
-		}
 	}
 
 	@Override
@@ -103,11 +90,6 @@ public class Server extends AbstractSocketServer {
 	public void onMessage(Socket conn, String message) {
 		Operation operation = Operation.getOperation(message);
 		System.out.println(operation);
-		try {
-			gossipMessage(conn, message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public class GUIController implements Initializable {
       try {
         byte[] operationData = Serializer.serialize(operation);
         String operationDataString = Base64.getEncoder().encodeToString(operationData);
-        this.controller.sendMessage(operationDataString);
+        this.controller.broadcast(operationDataString);
       } catch(IOException e){
         e.printStackTrace();
       }

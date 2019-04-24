@@ -1,6 +1,7 @@
 package com.sisterhore.util;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,8 +12,8 @@ import java.net.Socket;
  */
 public class SocketComm {
   public static void write(Socket conn, String message) throws IOException {
-    PrintWriter out = new PrintWriter(conn.getOutputStream(), true);
-    out.println(message);
+    DataOutputStream out = new DataOutputStream(conn.getOutputStream());     
+    out.writeUTF(message);
   }
 
   public static String read(Socket conn) throws IOException {
