@@ -31,7 +31,7 @@ public class Controller {
     String uri = String.format("ws://localhost:%d", this.serverPort);
     this.versionVector = new VersionVector(uri);
     this.deletionBuffer = new ArrayList<>();
-    this.crdt = new CRDT(uri);
+    this.crdt = new CRDT(uri, this);
   }
 
   /**
@@ -89,6 +89,8 @@ public class Controller {
   
   public boolean sendMessage(Operation operation){
     try {
+      Char operated = this.handleLocalOperation(operation);
+      operation.setData(operated);
       byte[] operationData = Serializer.serialize(operation);
       String operationDataString = Base64.getEncoder().encodeToString(operationData);
       for (Client client : clients) {
@@ -114,6 +116,15 @@ public class Controller {
     return this.peers.contains(uri);
   }
 
+  public Char handleLocalOperation(Operation operation) {
+    Char operated = null;
+    if (operation.getOperationType() == OperationType.INSERT)
+      operated = this.crdt.localInsert(operation.getCharacterUsed(), operation.getIndex());
+    else if (operation.getOperationType() == OperationType.DELETE)
+      this.crdt.localDelete(operation.getIndex());
+    return operated;
+  }
+
   public void handleRemoteOperation(Operation operation) {
     System.out.println("Handle Remote");
     if (this.versionVector.isApplied(operation.getVersion())) return;
@@ -128,7 +139,7 @@ public class Controller {
     if (operation.getOperationType() == OperationType.DELETE)
       this.crdt.localDelete(operation.getIndex());
     else if (operation.getOperationType() == OperationType.INSERT)
-      this.crdt.localInsert(operation.getCharacterUsed(), operation.getIndex());
+      this.crdt.remoteInsert(operation.getData(), operation.getIndex());
 
     this.versionVector.update(operation.getVersion());
   }

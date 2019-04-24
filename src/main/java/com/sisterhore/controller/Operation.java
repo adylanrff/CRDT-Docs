@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Base64;
 
+import com.sisterhore.crdt.Char;
 import com.sisterhore.util.Serializer;
 import com.sisterhore.version.Version;
 
@@ -12,6 +13,7 @@ public class Operation implements Serializable {
 	public OperationType operationType;
 	public char characterUsed;
 	public int index;
+	public Char data;
 	public Version version;
 
 	public Operation(OperationType operationType, char characterUsed, int index, Version version) {
@@ -19,7 +21,12 @@ public class Operation implements Serializable {
 		this.characterUsed = characterUsed;
 		this.index = index;
 		this.version = version;
+		this.data = null;
 	}
+
+	public void setData(Char data) { this.data = data; }
+
+	public Char getData() { return this.data; }
 
   public Version getVersion() { return this.version; }
 

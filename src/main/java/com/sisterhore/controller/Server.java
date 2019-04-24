@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import com.sisterhore.crdt.Char;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -91,7 +92,7 @@ public class Server extends WebSocketServer {
 		gossipMessage(conn, message);
 		String crdtContent = this.controller.getCRDTContent();
 		System.out.println(crdtContent);
-		this.controller.getGuiController().setDocTextField(crdtContent);
+//		this.controller.getGuiController().setDocTextField(crdtContent);
 	}
 
 	@Override

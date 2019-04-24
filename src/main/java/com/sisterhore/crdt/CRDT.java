@@ -1,10 +1,13 @@
 package com.sisterhore.crdt;
 
+import com.sisterhore.controller.Controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 public class CRDT {
+  private Controller controller;
   private String siteId;
   private ArrayList<Char> struct;
   private HashMap<Integer, BoundaryType> strategyChoice;
@@ -14,11 +17,12 @@ public class CRDT {
   }
   static final int boundary = 10;
 
-  public CRDT(String siteId){
+  public CRDT(String siteId, Controller controller){
     this.siteId = siteId;
     this.struct = new ArrayList<>();
     this.strategyChoice = new HashMap<>();
     this.base = 32;
+    this.controller = controller;
   }
 
   /**
@@ -50,12 +54,19 @@ public class CRDT {
    * @param value value of character to be inserted
    * @param index index where the value will be inserted
    */
-  public void localInsert(char value, int index) {
+  public Char localInsert(char value, int index) {
     Char newChar = this.generateChar(value, index);
     this.struct.add(index, newChar);
     // LOG
     this.printStruct();
     System.out.println(String.format("Site ID: %s", this.siteId));
+    return newChar;
+  }
+
+  public void remoteInsert(Char data, int index) {
+    this.struct.add(index, data);
+    String content = this.controller.getCRDTContent();
+//    this.controller.getGuiController().setDocTextField(content);
   }
 
   /**
