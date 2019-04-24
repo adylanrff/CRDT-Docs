@@ -13,23 +13,23 @@ public class ClientHandler extends AbstractClientHandler {
   }
 
   @Override
-  void onMessage(Socket socket, String message) {
-    socketServer.onMessage(socket, message);
+  public void onMessage(Socket conn, String message) {
+    socketServer.onMessage(conn, message);
   }
 
 
   @Override
-  void onClose(Socket conn) {
+  public void onClose(Socket conn) {
     socketServer.onClose(conn);
   }
 
   @Override
-  void onError(Socket conn, Exception ex) {
+  public void onError(Socket conn, Exception ex) {
     socketServer.onError(conn, ex);
   }
 
   @Override
-  void onOpen(Socket socket) {
+  public void onOpen(Socket conn) {
     socketServer.onOpen(conn);
   }
 }

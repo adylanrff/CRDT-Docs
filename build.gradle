@@ -18,7 +18,7 @@ javafx {
 }
 
 // Define the main class for the application
-mainClassName = 'com.sisterhore.AppGUI'
+mainClassName = 'com.sisterhore.socket.client.Test'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.

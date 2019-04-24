@@ -14,8 +14,12 @@ public abstract class AbstractSocketServer {
   
   };
 
-  public void start(int port) throws IOException {
-    serverSocket = new ServerSocket(port);
+  public void start(int port) {
+    try {
+      serverSocket = new ServerSocket(port);
+    } catch (Exception ex) {
+      
+    }
     while (true)
       new ClientHandler(this, serverSocket.accept()).start();
   }

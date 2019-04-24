@@ -17,7 +17,7 @@ public abstract class AbstractSocketClient {
   private PrintWriter out;
   private BufferedReader in;
 
-  public AbstractSocketClient(String host, int port) throws UnknownHostException, IOException {
+  public AbstractSocketClient(String host, int port) {
     this.host = host;
     this.port = port;
   }
@@ -30,6 +30,7 @@ public abstract class AbstractSocketClient {
     clientSocket = new Socket(ip, port);
     out = new PrintWriter(clientSocket.getOutputStream(), true);
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    this.onOpen();
   }
 
   public String send(String msg) throws IOException {
