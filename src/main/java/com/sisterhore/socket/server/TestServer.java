@@ -7,18 +7,18 @@ import java.net.Socket;
 
 public class TestServer extends AbstractSocketServer {
 
-    public TestServer() {
-        super();
+    public TestServer(int port) {
+        super(port);
     }
 
     @Override 
     public void onOpen(Socket conn) {
-        System.out.println("Server connected");
+        System.out.println("Client connected");
     }
 
     @Override 
     public void onClose(Socket conn) {
-        System.out.println("Server disconnected");
+        System.out.println("Client disconnected");
     }
 
     @Override 

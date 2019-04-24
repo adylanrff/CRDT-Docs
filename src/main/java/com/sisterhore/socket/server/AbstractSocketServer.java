@@ -10,21 +10,23 @@ import java.net.Socket;
 public abstract class AbstractSocketServer {
   private ServerSocket serverSocket;
   private int port;
-  public AbstractSocketServer() {
-  
+  public AbstractSocketServer(int port) {
+    this.port = port;
   };
 
-  public void start(int port) {
+  public void start() {
     try {
-      serverSocket = new ServerSocket(port);
-    } catch (Exception ex) {
-
+      serverSocket = new ServerSocket(this.port);
+    } catch (Exception e) {
+      System.out.println("Error server socket handler " + e);      
     }
     while (true) {
       try {
-        new ClientHandler(this, serverSocket.accept()).start();
+        Socket connection = serverSocket.accept();
+        this.onOpen(connection);
+        new ClientHandler(this, connection).start();
       } catch (Exception e) {
-        
+        System.out.println("Error client handler " + e);
       }
     }
   }

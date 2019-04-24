@@ -4,8 +4,7 @@ import com.sisterhore.socket.server.TestServer;
 
 public class ServerTest {
     public static void main(String[] args) {
-        TestServer server = new TestServer();
-
-        server.start(5000);
+        TestServer server = new TestServer(8888);
+        server.start();
     }
 }

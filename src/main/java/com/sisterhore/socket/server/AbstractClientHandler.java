@@ -13,7 +13,7 @@ public abstract class AbstractClientHandler extends Thread {
 
   public AbstractClientHandler(Socket socket) {
     this.clientSocket = socket;
-    this.onOpen(socket);
+    // this.onOpen(socket);
   }
 
   public void run() {

@@ -1,15 +1,14 @@
 package com.sisterhore.socket.client;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import com.sisterhore.socket.client.AbstractSocketClient;
 
 public class TestClient extends AbstractSocketClient {
 
-    public TestClient(String host, int port) {
+    public TestClient(String host, int port) throws UnknownHostException, IOException {
         super(host, port);
-        // try {
-        // } catch (Exception e) {
-
-        // }
     }
 
     @Override

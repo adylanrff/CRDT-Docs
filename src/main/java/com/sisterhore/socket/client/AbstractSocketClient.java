@@ -26,8 +26,8 @@ public abstract class AbstractSocketClient {
     return this.host;
   }
 
-  public void startConnection(String ip, int port) throws UnknownHostException, IOException {
-    clientSocket = new Socket(ip, port);
+  public void start() throws UnknownHostException, IOException {
+    clientSocket = new Socket(this.host, this.port);
     out = new PrintWriter(clientSocket.getOutputStream(), true);
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     this.onOpen();
