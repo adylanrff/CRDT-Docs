@@ -18,10 +18,15 @@ public abstract class AbstractSocketServer {
     try {
       serverSocket = new ServerSocket(port);
     } catch (Exception ex) {
-      
+
     }
-    while (true)
-      new ClientHandler(this, serverSocket.accept()).start();
+    while (true) {
+      try {
+        new ClientHandler(this, serverSocket.accept()).start();
+      } catch (Exception e) {
+        
+      }
+    }
   }
 
   public void stop() throws IOException {

@@ -27,7 +27,7 @@ public class TestServer extends AbstractSocketServer {
     }
 
     @Override 
-    public void onError(Socket conn) {
+    public void onError(Socket conn, Exception e) {
         System.out.println("Error");
     }
 }
