@@ -22,7 +22,7 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.sisterhore.controller;
+package com.sisterhore.messenger;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -31,16 +31,18 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Base64;
 
+import com.sisterhore.controller.Controller;
+import com.sisterhore.controller.Operation;
 import com.sisterhore.socket.server.AbstractSocketServer;
 import com.sisterhore.util.Handshake;
 import com.sisterhore.util.Serializer;
 import com.sisterhore.util.SocketComm;
 
-public class Server extends AbstractSocketServer {
+public class MessengerServer extends AbstractSocketServer {
 
 	private Controller controller;
 
-	public Server(Controller controller, int port) throws UnknownHostException {
+	public MessengerServer(Controller controller, int port) throws UnknownHostException {
 		super(port);
 		this.controller = controller;
 	}

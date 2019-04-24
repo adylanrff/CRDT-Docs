@@ -1,18 +1,20 @@
-package com.sisterhore.controller;
+package com.sisterhore.messenger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Map;
 
+import com.sisterhore.controller.Controller;
+import com.sisterhore.controller.Operation;
 import com.sisterhore.socket.client.AbstractSocketClient;
 import com.sisterhore.util.Handshake;
 import com.sisterhore.util.Serializer;
 
-public class Client extends AbstractSocketClient {
+public class MessengerClient extends AbstractSocketClient {
   private Controller controller;
 
-  public Client(Controller controller, String uri) throws URISyntaxException {
+  public MessengerClient(Controller controller, String uri) throws URISyntaxException {
     super(uri.split(":")[0], Integer.parseInt(uri.split(":")[1]));
     this.setController(controller);
   }

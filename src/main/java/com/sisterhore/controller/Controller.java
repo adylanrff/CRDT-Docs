@@ -1,18 +1,18 @@
 package com.sisterhore.controller;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 import com.sisterhore.crdt.CRDT;
+import com.sisterhore.messenger.MessengerClient;
+import com.sisterhore.messenger.MessengerServer;
 import com.sisterhore.version.VersionVector;
 
 public class Controller {
-  private ArrayList<Client> clients;
-  private Server server;
+  private ArrayList<MessengerClient> clients;
+  private MessengerServer server;
   private CRDT crdt;
   public VersionVector versionVector;
   private int serverPort;
@@ -21,13 +21,13 @@ public class Controller {
   public Controller(int serverPort) throws UnknownHostException {
     this.serverPort = serverPort;
     this.peers = new ArrayList<String>();
-    this.clients = new ArrayList<Client>();
+    this.clients = new ArrayList<MessengerClient>();
     String uri = String.format("ws://localhost:%d", this.serverPort);
     this.versionVector = new VersionVector(uri);
   }
 
   public void startServer() throws UnknownHostException {
-    this.server = new Server(this, this.serverPort);
+    this.server = new MessengerServer(this, this.serverPort);
     new Thread(this.server).start();
     System.out.println("Server started");
   }
@@ -40,7 +40,7 @@ public class Controller {
 
   public void connectToPeer(String uri) throws URISyntaxException, UnknownHostException, IOException {
     if (!this.peers.contains(uri)) {
-      Client client = new Client(this, uri);
+      MessengerClient client = new MessengerClient(this, uri);
       this.insertPeer(uri);
       this.clients.add(client);
       client.connect();
@@ -48,7 +48,7 @@ public class Controller {
   }
 
   public void closeClient(String uri) throws IOException {
-    for (Client client : clients) {
+    for (MessengerClient client : clients) {
       if (client.getURI().toString() == uri){
         client.close();
         clients.remove(client);
@@ -61,7 +61,7 @@ public class Controller {
   }
   
   public void sendMessage(String message) throws IOException {
-    for (Client client : clients) {
+    for (MessengerClient client : clients) {
       client.send(message);
     }
   }
