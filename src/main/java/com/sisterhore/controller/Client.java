@@ -2,6 +2,7 @@ package com.sisterhore.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.Map;
 
 import com.sisterhore.socket.client.AbstractSocketClient;
@@ -11,7 +12,7 @@ import com.sisterhore.util.Serializer;
 public class Client extends AbstractSocketClient {
   private Controller controller;
 
-  public Client(Controller controller, String uri, Map<String, String> httpHeaders) throws URISyntaxException {
+  public Client(Controller controller, String uri) throws URISyntaxException {
     super(uri.split(":")[0], Integer.parseInt(uri.split(":")[1]));
     this.setController(controller);
   }
@@ -62,7 +63,8 @@ public class Client extends AbstractSocketClient {
     byte[] handshakeData;
     try {
       handshakeData = Serializer.serialize(handshake);
-      this.send(handshakeData.toString());
+      String operationDataString = Base64.getEncoder().encodeToString(handshakeData);
+      this.send(operationDataString);
     } catch (IOException e) {
       e.printStackTrace();
     } 

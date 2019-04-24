@@ -10,7 +10,7 @@ public abstract class AbstractClientHandler extends Thread {
   private Socket clientSocket;
   private PrintWriter out;
   private BufferedReader in;
-  
+
   public AbstractClientHandler(Socket socket) {
     this.clientSocket = socket;
     // this.onOpen(socket);
@@ -23,6 +23,7 @@ public abstract class AbstractClientHandler extends Thread {
 
       String inputLine;
       while ((inputLine = in.readLine()) != null) {
+        System.out.println("Print this!");
         // if (".".equals(inputLine)) {
         //   out.println("bye");
         //   break;
@@ -32,6 +33,7 @@ public abstract class AbstractClientHandler extends Thread {
       }
       in.close();
       out.close();
+      System.out.println(clientSocket);
       this.onClose(this.clientSocket);
       clientSocket.close();
     } catch (IOException e) {

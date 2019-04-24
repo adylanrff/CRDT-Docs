@@ -42,6 +42,7 @@ public class AppGUI extends Application {
   public static void main(String[] args) throws IOException, URISyntaxException {
     int port = args.length != 0 ? Integer.parseInt(args[0]) : 8887;
     try {
+      System.out.println("TEST");
       controller = new Controller(port);
       launch(args);
     } catch (UnknownHostException e) {

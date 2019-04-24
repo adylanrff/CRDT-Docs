@@ -37,11 +37,8 @@ public abstract class AbstractSocketClient {
     this.onOpen();
   }
 
-  public String send(String msg) throws IOException {
+  public void send(String msg) throws IOException {
       out.println(msg);
-      String resp = in.readLine();
-      this.onMessage(resp);
-      return resp;
   }
 
   public void close() throws IOException {

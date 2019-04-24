@@ -18,7 +18,6 @@ public class SocketComm {
   public static String read(Socket conn) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
     String message = in.readLine();
-    in.close();
     return message;
   }
 }

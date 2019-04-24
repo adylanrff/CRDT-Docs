@@ -29,6 +29,7 @@ import java.net.BindException;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.Base64;
 
 import com.sisterhore.socket.server.AbstractSocketServer;
 import com.sisterhore.util.Handshake;
@@ -59,11 +60,12 @@ public class Server extends AbstractSocketServer {
 
 	@Override
 	public void onOpen(Socket conn) {
-		byte[] handshakeData;
+		String handshakeData;
 		Handshake handshake = null;
 		try {
-			handshakeData = SocketComm.read(conn).getBytes();
-			handshake = (Handshake) Serializer.deserialize(handshakeData);
+			handshakeData = SocketComm.read(conn);
+			byte[] bytes = Base64.getDecoder().decode(handshakeData);
+			handshake = (Handshake) Serializer.deserialize(bytes);
 			System.out.println(handshake);
 			SocketComm.write(conn, "SERVER: Welcome to the server!"); // This method sends a message to the new client
 		} catch (IOException e1) {

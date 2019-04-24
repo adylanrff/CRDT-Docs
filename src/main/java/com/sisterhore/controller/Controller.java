@@ -39,12 +39,9 @@ public class Controller {
 
   public void connectToPeer(String uri) throws URISyntaxException, UnknownHostException, IOException {
     if (!this.peers.contains(uri)) {
-      Map<String, String> httpHeaders = new HashMap<String, String>();
-      httpHeaders.put("server_port", String.valueOf(this.serverPort));
-      Client client = new Client(this, uri, httpHeaders);
-      // client.connect();
-      this.clients.add(client);
+      Client client = new Client(this, uri);
       this.insertPeer(uri);
+      this.clients.add(client);
       client.connect();
     }
   }
